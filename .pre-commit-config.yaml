@@ -1,0 +1,7 @@
+repos:
+  - repo: git@gitlab.com:flywheel-io/tools/etc/qa-ci
+    rev: master
+    hooks:
+      - id: test:flywheel-lint
+      - id: update:repo:docker
+      - id: publish:docker:test
