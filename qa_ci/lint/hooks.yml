@@ -1,0 +1,72 @@
+repos:
+  - repo: local
+    hooks:
+      - id: black
+        name: black
+        language: system
+        entry: bash -euc 'black ${BLACK_ARGS:-} ${BLACK_EXTRA:-} "$@"' --
+        types: [python]
+        require_serial: true
+      - id: hadolint
+        name: hadolint
+        language: system
+        entry: bash -euc
+          '
+          HADOLINT_ARGS=${HADOLINT_ARGS:---ignore DL3005 --ignore DL3059};
+          hadolint $HADOLINT_ARGS ${HADOLINT_EXTRA:-} "$@"
+          ' --
+        types: [dockerfile]
+      - id: jsonlint
+        name: jsonlint
+        language: system
+        entry: bash -euc
+          '
+          JSONLINT_ARGS=${JSONLINT_ARGS:---in-place --insert-final-newline};
+          jsonlint $JSONLINT_ARGS ${JSONLINT_EXTRA:-} "$@";
+          ' --
+        types: [json]
+      - id: markdownlint
+        name: markdownlint
+        language: system
+        entry: bash -euc
+          '
+          MARKDOWNLINT_ARGS=${MARKDOWNLINT_ARGS:---fix};
+          markdownlint $MARKDOWNLINT_ARGS ${MARKDOWNLINT_EXTRA:-} "$@";
+          ' --
+        types: [markdown]
+        exclude: helm
+      - id: pydocstyle
+        name: pydocstyle
+        language: system
+        entry: bash -euc
+          '
+          PYDOCSTYLE_ARGS=${PYDOCSTYLE_ARGS:---convention=google};
+          pydocstyle $PYDOCSTYLE_ARGS ${PYDOCSTYLE_EXTRA:-} "$@";
+          ' --
+        types: [python]
+        exclude: tests
+      - id: safety
+        name: safety
+        language: system
+        entry: bash -euc 'poetry export | safety check --stdin'
+        files: poetry.lock
+        pass_filenames: false
+      - id: shellcheck
+        name: shellcheck
+        language: system
+        entry: bash -euc
+          '
+          SHELLCHECK_ARGS=${SHELLCHECK_ARGS:---external-sources --color=always};
+          shellcheck $SHELLCHECK_ARGS ${SHELLCHECK_EXTRA:-} "$@";
+          ' --
+        types: [shell]
+      - id: yamllint
+        name: yamllint
+        language: system
+        entry: bash -euc
+          '
+          YAMLLINT_ARGS=${YAMLLINT_ARGS:--f colored};
+          yamllint $YAMLLINT_ARGS ${YAMLLINT_EXTRA:-} "$@";
+          ' --
+        types: [yaml]
+        exclude: helm

@@ -3,5 +3,7 @@ repos:
     rev: master
     hooks:
       - id: test:flywheel-lint
-      - id: update:repo:docker
+      # TODO github just added a 60 request/hour rate-limit - fix resulting failures
+      # https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting
+      # - id: update:repo
       - id: publish:docker:test
