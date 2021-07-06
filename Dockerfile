@@ -1,16 +1,82 @@
-FROM debian:buster-20210329-slim
+FROM flywheel/python:master.c6ec2360
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
+WORKDIR /usr/local/bin
 
-# add flywheel user and common toolset
-RUN apt-get update; \
-    apt-get install -y --no-install-recommends \
-        gosu=1.10-1+b23 \
-        tini=0.18.0-1 \
+# shellcheck for shell script linting (for test:flywheel-lint)
+ENV SHELLCHECK_VERSION=0.7.2
+RUN curl -fLSs https://github.com/koalaman/shellcheck/releases/download/v$SHELLCHECK_VERSION/shellcheck-v$SHELLCHECK_VERSION.linux.x86_64.tar.xz \
+        | tar -xJ --strip-components=1 shellcheck-v$SHELLCHECK_VERSION/shellcheck
+
+# hadolint for dockerfile linting (requires shellcheck - for test:flywheel-lint)
+ENV HADOLINT_VERSION=2.6.0
+RUN curl -fLSsO https://github.com/hadolint/hadolint/releases/download/v$HADOLINT_VERSION/hadolint-Linux-x86_64; \
+    chmod +x hadolint-Linux-x86_64; \
+    mv hadolint-Linux-x86_64 hadolint
+
+# add nodejs to enable installing npm packages
+ENV NODEJS_VERSION=14.17.1
+RUN curl -fLSs https://nodejs.org/dist/v$NODEJS_VERSION/node-v$NODEJS_VERSION-linux-x64.tar.xz \
+        | tar xJC /usr/local --strip-components=1 node-v$NODEJS_VERSION-linux-x64/{bin,include,lib,share}
+
+# install npm packages (linters for test:flywheel-lint)
+RUN npm install --global \
+        jsonlint-newline-fork@1.6.8 \
+        markdownlint-cli@0.27.1 \
     ; \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf ~/.config ~/.npm
 
-# set workdir, entrypoint and cmd
-WORKDIR /src
-COPY entrypoint.sh ./
-ENTRYPOINT ["/src/entrypoint.sh"]
-CMD ["/bin/bash", "-c", "echo hello $(id -un)"]
+# install npm packages (linters for test:flywheel-lint)
+RUN pip install --no-cache-dir \
+    black==21.6b0 \
+    hadolintw==1.2.1 \
+    pre-commit==2.13.0 \
+    pydocstyle==6.1.1 \
+    pyyaml==5.4.1 \
+    safety==1.10.3 \
+    yamllint==1.26.1
+
+# docker client for dind usage (eg. publish:docker)
+ENV DOCKER_VERSION=19.03.13
+RUN curl -fLSs https://download.docker.com/linux/static/stable/x86_64/docker-$DOCKER_VERSION.tgz | \
+    tar xz --strip-components=1 docker/docker
+
+# compose for simple dind intergation environments
+ENV DOCKER_COMPOSE_VERSION=1.29.2
+RUN curl -fLSso docker-compose https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-Linux-x86_64; \
+    chmod +x docker-compose
+
+# docker plugin for updating dockerhub image readmes
+ENV PUSHRM_VERSION=1.7.0
+RUN curl -fLSso docker-pushrm https://github.com/christian-korneck/docker-pushrm/releases/download/v$PUSHRM_VERSION/docker-pushrm_linux_amd64; \
+    chmod +x docker-pushrm; \
+    mkdir -p /root/.docker/cli-plugins; \
+    mv docker-pushrm /root/.docker/cli-plugins
+
+# helm, helm-docs and kubeval for test:helm-check
+ENV KUBERNETES=1.15.7
+ENV HELM_VERSION=3.3.4
+RUN curl -fLSs https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz | tar xz linux-amd64/helm; \
+    mv linux-amd64/helm .; \
+    rm -rf linux-amd64; \
+    helm plugin install https://github.com/chartmuseum/helm-push.git
+
+ENV HELM_DOCS_VERSION=1.5.0
+RUN curl -fLSs https://github.com/norwoodj/helm-docs/releases/download/v$HELM_DOCS_VERSION/helm-docs_${HELM_DOCS_VERSION}_Linux_x86_64.tar.gz \
+        | tar xz helm-docs
+
+ENV KUBEVAL_VERSION=0.16.1
+RUN curl -fLSs https://github.com/instrumenta/kubeval/releases/download/v$KUBEVAL_VERSION/kubeval-linux-amd64.tar.gz \
+        | tar xz kubeval
+
+ENV KUBEVAL_SCHEMA_DIR=/etc/kubeval
+ENV KUBEVAL_SCHEMA_LOCATION=file://$KUBEVAL_SCHEMA_DIR
+WORKDIR $KUBEVAL_SCHEMA_DIR
+RUN pip install --no-cache-dir openapi2jsonschema==0.9.1; \
+    openapi2jsonschema --expanded --kubernetes --stand-alone --strict \
+        --output v$KUBERNETES-standalone-strict \
+        https://github.com/kubernetes/kubernetes/raw/v$KUBERNETES/api/openapi-spec/swagger.json
+
+WORKDIR /
+COPY qa_ci/ /
+ENTRYPOINT []
+CMD ["/bin/bash"]

@@ -1,0 +1,19 @@
+include:
+  - project: flywheel-io/tools/etc/qa-ci
+    file: ci/lint.yml
+    ref: master  # [0-9a-f]{8}
+  - project: flywheel-io/tools/etc/qa-ci
+    file: ci/lint.yml
+    ref: "master"  # [0-9a-f]{8}
+  - project: flywheel-io/tools/etc/qa-ci
+    file: ci/lint.yml
+    ref: d34db33f  # [0-9a-f]{8}
+
+job:
+  image: flywheel/lint  # flywheel/lint:master\.[0-9a-f]{8}
+
+job-with-tag:
+  image: flywheel/lint:master  # flywheel/lint:master\.[0-9a-f]{8}
+
+job-with-tag-quoted:
+  image: "flywheel/lint:master.d34db33f"  # flywheel/lint:master\.[0-9a-f]{8}
