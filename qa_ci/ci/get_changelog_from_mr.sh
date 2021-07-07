@@ -23,7 +23,7 @@ main() {
     MR_CNT=$(echo "$RESPONSE" | jq length)
     if [[ $MR_CNT != 1 ]]
     then
-        echo "MR was found"; exit 1;
+        echo "MR was found with ID $MR_IID"; exit 1;
     fi
     DESCRIPTION=$(echo "$RESPONSE" | jq -r '.[0].description')
     echo "$DESCRIPTION"
