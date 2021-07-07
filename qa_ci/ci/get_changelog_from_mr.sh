@@ -18,8 +18,6 @@ main() {
     else
         echo "Could not find MR ID in $CI_COMMIT_MESSAGE"; exit 1;
     fi
-    echo "$MR_IID"
-
     RESPONSE=$(curl -fLSs "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests?iids[]=$MR_IID" \
         -H "Private-Token: $GITLAB_CI_BOT_TOKEN" \
         -H "Content-Type: application/json")
