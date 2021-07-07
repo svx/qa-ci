@@ -9,6 +9,7 @@ The MR ID is extracted from the commit message.
 "
 
 main() {
+    echo "$*" | grep -Eqvw -- "-h|--help|help" || { echo "$USAGE"; exit; }
     MR_ID_REGEX="!([0-9]+)"
     if [[ $CI_COMMIT_MESSAGE =~ $MR_ID_REGEX ]]
     then
