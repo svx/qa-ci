@@ -30,7 +30,7 @@ def check_urls(path: Path) -> t.List[t.Tuple[str, str, t.Any]]:
     # Only for .md files
     md_url_re = re.compile(r"\(" + url_re + r"\)")
     local_re = re.compile(r"\]\(([=a-zA-Z0-9\_\/\?\&\%\+\#\.\-]+)\)")
-    url_re = re.compile(r"(?:[#]\s)(?P<url>" + url_re + r")")
+    url_re = re.compile(r"(?:\#.*)(?P<url>" + url_re + r")")
 
     with requests.Session() as sess:
         sess.max_redirects = 5
