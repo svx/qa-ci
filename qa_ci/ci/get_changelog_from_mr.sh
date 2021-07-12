@@ -2,37 +2,28 @@
 test -z "$TRACE" || set -x
 set -euo pipefail
 USAGE="Usage:
-  $0 [OPTIONS...]
+  $0 CI_COMMIT_MESSAGE
 
 Get changelog from the MR's description.
-One can search for the MR by specifying query params
-See the list of available options below:
-https://docs.gitlab.com/ee/api/merge_requests.html#list-project-merge-requests
+The MR ID is extracted from the commit message (CI_COMMIT_MESSAGE).
 "
 
 main() {
-    QUERY_STR=""
-    OPT_REGEX="^([^=]+)=(.*)$"
-    for QUERY_OPT in "$@"
-    do
-        if [[ $QUERY_OPT =~ $OPT_REGEX ]]
-        then
-            QUERY_STR="${QUERY_STR}&${BASH_REMATCH[1]}=${BASH_REMATCH[2]}"
-        else
-            echo "Invalid key-value '$QUERY_OPT'."; echo "$USAGE"; exit 1;
-        fi
-    done
-    QUERY_STR="${QUERY_STR:1}"
-    echo "Query string: $QUERY_STR"
-
-    #RESPONSE=$(</tmp/sample_mr.json)
-    RESPONSE=$(curl -fLSs "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests?$QUERY_STR" \
+    echo "$*" | grep -Eqvw -- "-h|--help|help" || { echo "$USAGE"; exit; }
+    MR_ID_REGEX="!([0-9]+)"
+    if [[ $CI_COMMIT_MESSAGE =~ $MR_ID_REGEX ]]
+    then
+        MR_IID="${BASH_REMATCH[1]}"
+    else
+        echo "Could not find MR ID in $CI_COMMIT_MESSAGE"; exit 1;
+    fi
+    RESPONSE=$(curl -fLSs "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests?iids[]=$MR_IID" \
         -H "Private-Token: $GITLAB_CI_BOT_TOKEN" \
         -H "Content-Type: application/json")
     MR_CNT=$(echo "$RESPONSE" | jq length)
     if [[ $MR_CNT != 1 ]]
     then
-        echo "Not a single MR was found ($MR_CNT)"; exit 1;
+        echo "MR was not found with ID $MR_IID. Response: $RESPONSE"; exit 1;
     fi
     DESCRIPTION=$(echo "$RESPONSE" | jq -r '.[0].description')
     echo "$DESCRIPTION"
