@@ -18,6 +18,22 @@ main() {
         MR_NO=$(echo "$LOG" | grep "See merge request" | grep -Eo '![0-9]+')
         MR_TITLE=$(echo "$LOG" | head -n1)
         echo "- $MR_NO $MR_TITLE"
+        ISSUE_NUMBERS=()
+        for ISSUE in $(echo "$MR_TITLE" | grep -Eo "\[\s*FLYW-[0-9]+\s*\]"); do
+            if $(echo "$ISSUE" | grep -Eq "FLYW-[0-9]+"); then
+                ISSUE=$(echo "$ISSUE" | grep -Eo "[0-9]+")
+                if [[ ! "${ISSUE_NUMBERS[@]}" =~ "${ISSUE}" ]]; then
+                    # add once
+                    ISSUE_NUMBERS+=("${ISSUE}")
+                fi
+            fi
+        done
+        if [ ${#ISSUE_NUMBERS[@]} -ne 0 ]; then
+            # sort as numbers
+            ISSUE_NUMBERS=( $(IFS=$'\n'; echo "${ISSUE_NUMBERS[*]}" | sort -n) )
+            ISSUE_STR=$( printf "[FLYW-%d], " "${ISSUE_NUMBERS[@]}")
+            echo "    - ${ISSUE_STR::-2}"
+        fi
     done
 }
 
