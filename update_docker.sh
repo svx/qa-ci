@@ -6,7 +6,7 @@
 # Using a helm version compiled against the most recent prod deployment version:
 #   https://grafana.ops.flywheel.io/d/8si-2YFGz/cluster-version
 
-replace DOCKER_VERSION=.* DOCKER_VERSION="$(latest_version git docker/engine)"
+replace DOCKER_VERSION=.* DOCKER_VERSION="$(latest_version git docker/engine '^v')"
 replace DOCKER_COMPOSE_VERSION=.* DOCKER_COMPOSE_VERSION="$(latest_version git docker/compose)"
 replace PUSHRM_VERSION=.* PUSHRM_VERSION="$(latest_version git christian-korneck/docker-pushrm)"
 replace HELM_VERSION=.* HELM_VERSION="$(latest_version git helm/helm v3.3)"
