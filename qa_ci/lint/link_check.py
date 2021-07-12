@@ -3,24 +3,25 @@
 import os
 import re
 import requests
+import sys
 import typing as t
 from pathlib import Path
 
 TIMEOUT = 10
 RETRYCODES = (400, 404, 405, 503)
 # multiple exceptions must be tuples, not lists in general
-OKE = (
-    requests.exceptions.TooManyRedirects
-)  # FIXME: until full browswer like Arsenic implemented
 EXC = (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError)
 IGNORED = [".git"]
+UNICODE_SUPPORT = sys.stdout.encoding.lower().startswith("utf")
+OK = "\u2714" if UNICODE_SUPPORT else "OK"
+FAIL = "\u274c" if UNICODE_SUPPORT else "FAIL"
 
 
 def main():
     """Main function for validating links."""
-    print("Walk through $PWD")
     bad_urls = check_urls(Path(os.environ["PWD"]))
-    print(f"Bad urls: {bad_urls}")
+    if bad_urls:
+        sys.exit(1)
 
 
 def check_urls(path: Path) -> t.List[t.Tuple[str, str, t.Any]]:
@@ -56,20 +57,25 @@ def check_local(
     """
     for url in urls:
         if url[0] == "#":
+            log_success(fn, url)
             continue
         stem = url.strip("/")
         if not url[0] == "/":
             if {"/", "."}.intersection(stem) or (path / stem).is_file():
+                log_success(fn, url)
                 continue
+            log_fail(fn, url)
             yield fn.name, url
             continue
         if {"/", "."}.intersection(stem):
+            log_success(fn, url)
             continue
         if not (
             (path / stem).is_file()
             or (path.parent / stem).is_file()
             or (path / stem).is_dir()
         ):
+            log_fail(fn, url)
             yield fn.name, url
 
 
@@ -84,21 +90,25 @@ def check_remote(
             resp = sess.head(url, allow_redirects=True, timeout=TIMEOUT)
             if resp.status_code in RETRYCODES:
                 if retry(url):
+                    log_success(fn, url)
                     continue
                 else:
+                    log_fail(fn, url)
                     yield fn.name, url, resp.status_code
                     continue
         except EXC as e:
             if retry(url):
+                log_success(fn, url)
                 continue
+            log_fail(fn, url)
             yield fn.name, url, str(e)
             continue
-
         code = resp.status_code
         if code != 200:
+            log_fail(fn, url)
             yield fn.name, url, code
         else:
-            print(f"OK: {url:80s}")
+            log_success(fn, url)
 
 
 def retry(url: str) -> bool:
@@ -133,6 +143,16 @@ def get_files(path: Path, ext: t.Optional[str] = None) -> t.Iterable[Path]:
         yield path
     else:
         raise FileNotFoundError(path)
+
+
+def log_fail(fn: Path, url: str):
+    """Log failed link check."""
+    print(f"{FAIL}: {fn}: {url:80s}")
+
+
+def log_success(fn: Path, url: str):
+    """Log successful link check."""
+    print(f"{OK}: {fn}: {url:80s}")
 
 
 if __name__ == "__main__":
