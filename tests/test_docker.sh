@@ -159,14 +159,17 @@ test_link_check() {
     )
     log "test_link_check"
     i=0
-    python /lint/link_check.py | while read -r LINE; do
+    while read -r LINE; do
       if echo "$LINE" | grep -Eq "${EXPECTED[i]}"; then
           log "test_link_check[$LINE] pass"
       else
           die "test_link_check[$LINE] fail - expected ${EXPECTED[i]}"
       fi
       i=$((i+1))
-    done
+    done < <(python /lint/link_check.py)
+    if [ $i = 0 ]; then
+      die "test_link_check fail - did not iterate"
+    fi
 }
 
 

@@ -151,7 +151,9 @@ def get_files(path: Path) -> t.Iterable[Path]:
     path = Path(path).expanduser().resolve()
     if INCLUDE:
         for inc in INCLUDE:
-            for p in list(path.rglob(f"*{inc}*")).sort():
+            paths = list(path.rglob(f"*{inc}*"))
+            paths.sort()
+            for p in paths:
                 yield from iter_path(p)
     else:
         yield from iter_path(path)
