@@ -20,8 +20,7 @@ main() {
         -H "Private-Token: $GITLAB_CI_BOT_TOKEN" \
         -H "Content-Type: application/json")
     MR_CNT=$(echo "$RESPONSE" | jq length)
-    if [[ $MR_CNT != 1 ]]
-    then
+    if [[ $MR_CNT != 1 ]]; then
         echo "MR was not found with ID $MR_IID. Response: $RESPONSE"; exit 1;
     fi
     DESCRIPTION=$(echo "$RESPONSE" | jq -r '.[0].description')
