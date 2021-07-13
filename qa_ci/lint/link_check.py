@@ -11,17 +11,35 @@ TIMEOUT = 10
 RETRYCODES = (400, 404, 405, 503)
 # multiple exceptions must be tuples, not lists in general
 EXC = (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError)
-IGNORED = [".git"]
+INCLUDE = []
+EXCLUDE = []
 UNICODE_SUPPORT = sys.stdout.encoding.lower().startswith("utf")
-OK = "\u2714" if UNICODE_SUPPORT else "OK"
-FAIL = "\u274c" if UNICODE_SUPPORT else "FAIL"
+OK = "\u2714" if not os.environ.get("FORCE_ASCII") and UNICODE_SUPPORT else "OK"
+FAIL = "\u274c" if not os.environ.get("FORCE_ASCII") and UNICODE_SUPPORT else "FAIL"
 
 
 def main():
     """Main function for validating links."""
+    setup_include_exclude()
     bad_urls = check_urls(Path(os.environ["PWD"]))
     if bad_urls:
         sys.exit(1)
+
+
+def setup_include_exclude():
+    """Validate and set up INCLUDE/EXCLUDE."""
+    global INCLUDE
+    global EXCLUDE
+    if os.environ.get("FLYWHEEL_LINK_CHECK_INC"):
+        INCLUDE = os.environ.get("FLYWHEEL_LINK_CHECK_INC").split(":")
+    if os.environ.get("FLYWHEEL_LINK_CHECK_EXC"):
+        if INCLUDE:
+            raise ValueError(
+                "FLYWHEEL_LINK_CHECK_INC and FLYWHEEL_LINK_CHECK_EXC are mutually exclusive"
+            )
+        EXCLUDE = os.environ.get("FLYWHEEL_LINK_CHECK_EXC").split(":")
+    elif not INCLUDE:
+        EXCLUDE = [".git"]
 
 
 def check_urls(path: Path) -> t.List[t.Tuple[str, str, t.Any]]:
@@ -128,18 +146,29 @@ def retry(url: str) -> bool:
     return ok
 
 
-def get_files(path: Path, ext: t.Optional[str] = None) -> t.Iterable[Path]:
-    """Yield files in path with suffix ext and recurse directories."""
+def get_files(path: Path) -> t.Iterable[Path]:
+    """Yield files in path matching INCLUDE/EXCLUDE."""
     path = Path(path).expanduser().resolve()
-    if path.name in IGNORED:
+    if INCLUDE:
+        for inc in INCLUDE:
+            for p in list(path.rglob(f"*{inc}*")).sort():
+                yield from iter_path(p)
+    else:
+        yield from iter_path(path)
+
+
+def iter_path(path: Path) -> t.Iterable[Path]:
+    """Yield files in path and recurse directories."""
+    path = Path(path).expanduser().resolve()
+    if all(p in EXCLUDE for p in [path, path.stem, path.name]):
         return
     if path.is_dir():
         for p in path.iterdir():
-            if p.is_file() and (not ext or p.suffix == ext):
+            if p.is_file():
                 yield p
             elif p.is_dir():
-                yield from get_files(p)
-    elif path.is_file() and (not ext or path.suffix == ext):
+                yield from iter_path(p)
+    elif path.is_file():
         yield path
     else:
         raise FileNotFoundError(path)
