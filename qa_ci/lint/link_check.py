@@ -165,7 +165,9 @@ def iter_path(path: Path) -> t.Iterable[Path]:
     if all(p in EXCLUDE for p in [path, path.stem, path.name]):
         return
     if path.is_dir():
-        for p in path.iterdir():
+        paths = list(path.iterdir())
+        paths.sort()
+        for p in paths:
             if p.is_file():
                 yield p
             elif p.is_dir():
