@@ -31,7 +31,7 @@ main() {
         if [ ${#ISSUE_NUMBERS[@]} -ne 0 ]; then
             # sort as numbers
             ISSUE_NUMBERS=$(IFS=$'\n'; echo "${ISSUE_NUMBERS[*]}" | sort -n)
-            ISSUE_STR=$( printf "[FLYW-%d], " "${ISSUE_NUMBERS[@]}")
+            ISSUE_STR=$(printf "[FLYW-%d], " "${ISSUE_NUMBERS[@]}")
             echo "    - ${ISSUE_STR::-2}"
         fi
     done
