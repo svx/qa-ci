@@ -11,7 +11,7 @@ The MR ID is extracted from the commit message (CI_COMMIT_MESSAGE).
 main() {
     echo "$*" | grep -Eqvw -- "-h|--help|help" || { echo "$USAGE"; exit; }
     MR_ID_REGEX="!([0-9]+)"
-    if [[ $CI_COMMIT_MESSAGE =~ $MR_ID_REGEX ]]
+    if [ "$CI_COMMIT_MESSAGE" =~ "$MR_ID_REGEX" ]
     then
         MR_IID="${BASH_REMATCH[1]}"
     else
@@ -21,7 +21,7 @@ main() {
         -H "Private-Token: $GITLAB_CI_BOT_TOKEN" \
         -H "Content-Type: application/json")
     MR_CNT=$(echo "$RESPONSE" | jq length)
-    if [[ $MR_CNT != 1 ]]
+    if [ "$MR_CNT" != 1 ]
     then
         echo "MR was not found with ID $MR_IID. Response: $RESPONSE"; exit 1;
     fi
