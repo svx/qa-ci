@@ -28,10 +28,8 @@ main() {
     MR_OPTS["title"]=$BRANCH
 
     OPT_REGEX="^([^=]+)=(.*)$"
-    for MR_OPT in "$@"
-    do
-        if [[ $MR_OPT =~ $OPT_REGEX ]]
-        then
+    for MR_OPT in "$@"; do
+        if [[ $MR_OPT =~ $OPT_REGEX ]]; then
             MR_OPTS[${BASH_REMATCH[1]}]=${BASH_REMATCH[2]}
         else
             echo "Invalid key-value '$MR_OPT'."; echo "$USAGE"; exit 1;
