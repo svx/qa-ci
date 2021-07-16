@@ -48,8 +48,11 @@ main() {
     replace() { sed -Ei "s|$2|$3|" $1; }
     replace .gitlab-ci.yml "RELEASECI_${FW_RELEASE_COMPONENT}_VERSION:.*" "RELEASECI_${FW_RELEASE_COMPONENT}_VERSION: ${FW_RELEASE_VERSION}"
 
+    # for testing
+    git diff
+
     git commit -am "$FW_RELEASE_COMMIT"
-    git push -f origin "$FW_RELEASE_BRANCH"
+    #git push -f origin "$FW_RELEASE_BRANCH"
 
     cd ../ && rm -rf release_repo
 }
