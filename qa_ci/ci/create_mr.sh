@@ -53,10 +53,21 @@ main() {
 
     echo "MR creation payload: $PAYLOAD"
 
-    curl -fLSs "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests" \
+    HTTP_CODE=$(
+        curl -fLSs "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests" \
         -H "Private-Token: $GITLAB_CI_BOT_TOKEN" \
         -H "Content-Type: application/json" \
-        -d "$PAYLOAD"
+        -d "$PAYLOAD" \
+        -o output.json
+    )
+
+    if [[ $HTTP_CODE -eq 200 ]]; then
+        exit 0
+    fi
+
+    cat output.json
+
+    exit 1
 }
 
 main "$@"
