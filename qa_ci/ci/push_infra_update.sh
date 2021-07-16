@@ -45,7 +45,7 @@ main() {
     cd release_repo
     git checkout "$FW_RELEASE_BRANCH"
 
-    replace() { sed -Ei "s|$2|$3|" $1; }
+    replace() { sed -Ei "s|$2|$3|" "$1"; }
     replace .gitlab-ci.yml "RELEASECI_${FW_RELEASE_COMPONENT}_VERSION:.*" "RELEASECI_${FW_RELEASE_COMPONENT}_VERSION: ${FW_RELEASE_VERSION}"
 
     # for testing

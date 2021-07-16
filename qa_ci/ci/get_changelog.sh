@@ -30,9 +30,12 @@ main() {
         done
         if [ ${#ISSUE_NUMBERS[@]} -ne 0 ]; then
             # sort as numbers
-            ISSUE_NUMBERS_SORTED=($(IFS=$'\n'; echo "${ISSUE_NUMBERS[*]}" | sort -n))
-            ISSUE_STR=$(printf "[FLYW-%d], " "${ISSUE_NUMBERS_SORTED[@]}")
-            echo "    - ${ISSUE_STR::-2}"
+            ISSUE_STR=""
+            TMP_STR=$(IFS=$'\n'; echo "${ISSUE_NUMBERS[*]}" | sort -n)
+            while IFS= read -r LINE ; do
+                ISSUE_STR="$ISSUE_STR $(printf "[FLYW-%d]" "$LINE")"
+            done <<< "$TMP_STR"
+            echo "    - ${ISSUE_STR:1}"
         fi
     done
 }
