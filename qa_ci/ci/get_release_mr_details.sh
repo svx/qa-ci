@@ -16,8 +16,7 @@ main() {
     fi
 
     RELEASE_VERSION=$1 && shift
-    INFRA_REPOSITORY="infrastructure%2Frelease"
-    RESPONSE=$(curl -fLSs "$CI_API_V4_URL/projects/$INFRA_REPOSITORY/merge_requests?state=open&target_branch=master" \
+    RESPONSE=$(curl -fLSs "$CI_API_V4_URL/projects/flywheel-io%2Finfrastructure%2Frelease/merge_requests?state=opened&target_branch=master" \
         -H "Private-Token: $GITLAB_CI_BOT_TOKEN" \
         -H "Content-Type: application/json")
     MR_CNT=$(echo "$RESPONSE" | jq length)
