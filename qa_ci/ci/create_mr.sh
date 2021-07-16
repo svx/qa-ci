@@ -18,8 +18,7 @@ main() {
     test $# -ge 2 || { echo "Missing required BRANCH/TARGET."; echo "$USAGE"; exit 1; }
     git --no-pager diff -U0 --word-diff=color --exit-code && { echo "Nothing to commit"; exit; }
     BRANCH=$1 && shift
-    TARGET=$1 && shift
-
+    TARGET=$2 && shift
     git checkout -B "$BRANCH"
     git commit -am "$BRANCH"
     git push -f origin "$BRANCH"
@@ -32,7 +31,7 @@ main() {
         if [[ $MR_OPT =~ $OPT_REGEX ]]; then
             MR_OPTS[${BASH_REMATCH[1]}]=${BASH_REMATCH[2]}
         else
-            echo "Invalid key-value '$MR_OPT'."; echo "$USAGE"; exit 1;
+            echo "Invalid key-value '$MR_OPT', skipping";
         fi
     done
 

@@ -20,9 +20,9 @@ main() {
         echo "- $MR_NO $MR_TITLE"
         ISSUE_NUMBERS=()
         for ISSUE in $(echo "$LOG" | grep -Eo "\[\s*FLYW-[0-9]+\s*\]"); do
-            if $(echo "$ISSUE" | grep -Eq "FLYW-[0-9]+"); then
+            if echo "$ISSUE" | grep -Eq "FLYW-[0-9]+"; then
                 ISSUE=$(echo "$ISSUE" | grep -Eo "[0-9]+")
-                if [[ ! "${ISSUE_NUMBERS[@]}" =~ "${ISSUE}" ]]; then
+                if [[ ! "${ISSUE_NUMBERS[*]}" =~ ${ISSUE} ]]; then
                     # add once
                     ISSUE_NUMBERS+=("${ISSUE}")
                 fi
@@ -30,8 +30,8 @@ main() {
         done
         if [ ${#ISSUE_NUMBERS[@]} -ne 0 ]; then
             # sort as numbers
-            ISSUE_NUMBERS=$(IFS=$'\n'; echo "${ISSUE_NUMBERS[*]}" | sort -n)
-            ISSUE_STR=$(printf "[FLYW-%d], " "${ISSUE_NUMBERS[@]}")
+            ISSUE_NUMBERS_SORTED=($(IFS=$'\n'; echo "${ISSUE_NUMBERS[*]}" | sort -n))
+            ISSUE_STR=$(printf "[FLYW-%d], " "${ISSUE_NUMBERS_SORTED[@]}")
             echo "    - ${ISSUE_STR::-2}"
         fi
     done
