@@ -10,7 +10,7 @@ Get FW_RELEASE_BRANCH and FW_RELEASE_COMMIT details
 main() {
     echo "$*" | grep -Eqvw -- "-h|--help|help" || { echo "$USAGE"; exit; }
 
-    if [ -z "$FW_RELEASE_COMPONENT" ]; then
+    if [ -z ${FW_RELEASE_COMPONENT+x} ]; then
         # no component set, exit
         exit 0
     fi
@@ -29,7 +29,6 @@ main() {
     FW_RELEASE_BRANCH=$(echo "$RESPONSE" | jq -r '.[0].source_branch')
     FW_RELEASE_COMMIT="fix: update ${FW_RELEASE_COMPONENT} version to ${RELEASE_VERSION}"
 
-    echo "***"
     echo ">>>"
     echo "FW_RELEASE_BRANCH=\"${FW_RELEASE_BRANCH}\""
     echo "FW_RELEASE_COMMIT=\"${FW_RELEASE_COMMIT}\""
