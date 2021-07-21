@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import re
 
 import git
 
@@ -19,16 +20,28 @@ def main():
         try:
             rev1 = repo.git.describe(abbrev=0, tags=True)
         except git.exc.GitCommandError:
-            rev1 = ""
-        print(rev1)
+            rev1 = "origin"
     if not rev2:
         rev2 ="HEAD"
-        print(rev2)
 
     revs = repo.git.log(f"{rev1}..{rev2}", merges=True, format="%h")
+    merge_req_data = {}
+    issue_numbers = set()
+    for rev in iter(revs.splitlines()):
+        log = repo.git.show(rev, format="%B")
+        print(log)
+        mr_no = re.match(r'See merge request.*(![\d]+)', log)
+        if mr_no:
+            mr_no = mr_no
 
 
-    print(revs)
+
+        print(log)
+
+
+
+        print(rev)
+
 
 
 #  REVS=$(git log --merges --format="%h" "$REV1..$REV2")
