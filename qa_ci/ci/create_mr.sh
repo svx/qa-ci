@@ -19,7 +19,6 @@ main() {
     git --no-pager diff -U0 --word-diff=color --exit-code && { echo "Nothing to commit"; exit; }
     BRANCH=$1 && shift
     TARGET=$1 && shift
-
     git checkout -B "$BRANCH"
     git commit -am "$BRANCH"
     git push -f origin "$BRANCH"
@@ -32,7 +31,7 @@ main() {
         if [[ $MR_OPT =~ $OPT_REGEX ]]; then
             MR_OPTS[${BASH_REMATCH[1]}]=${BASH_REMATCH[2]}
         else
-            echo "Invalid key-value '$MR_OPT'."; echo "$USAGE"; exit 1;
+            echo "Invalid key-value '$MR_OPT', skipping";
         fi
     done
 
@@ -54,7 +53,7 @@ main() {
 
     echo "MR creation payload: $PAYLOAD"
 
-    curl -fLSs "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests" \
+    curl -LSv "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests" \
         -H "Private-Token: $GITLAB_CI_BOT_TOKEN" \
         -H "Content-Type: application/json" \
         -d "$PAYLOAD"
