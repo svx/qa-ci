@@ -33,7 +33,10 @@ RUN pip install --no-cache-dir \
     pydocstyle==6.1.1 \
     pyyaml==5.4.1 \
     safety==1.10.3 \
-    yamllint==1.26.1
+    yamllint==1.26.1 \
+    GitPython==3.1.18 \
+    pytest==6.2.4 \
+    requests==2.26.0
 
 # docker client for dind usage (eg. publish:docker)
 ENV DOCKER_VERSION=19.03.13
