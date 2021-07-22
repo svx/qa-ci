@@ -41,8 +41,8 @@ RUN curl -fLSs https://download.docker.com/linux/static/stable/x86_64/docker-$DO
     tar xz --strip-components=1 docker/docker
 
 # compose for simple dind intergation environments
-ENV DOCKER_COMPOSE_VERSION=1.25.2
-RUN curl -fLSso docker-compose https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-Linux-x86_64; \
+ENV DOCKER_COMPOSE_VERSION=1.29.2
+RUN curl -fLSso docker-compose https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-Linux-x86_64; \
     chmod +x docker-compose
 
 # docker plugin for updating dockerhub image readmes
