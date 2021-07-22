@@ -34,7 +34,7 @@ update_gitlabci_refs() {
     FILTER='.include[] | select(has("project") and has("ref")) | .project'
     for PROJECT in $(yq -r "$FILTER" "$1" | sort -u); do
         CLONE=$(git_clone "$PROJECT")
-        NEW=$(cd "$CLONE" && git rev-parse --short=8 HEAD)
+        NEW=$(cd "$CLONE" && git rev-parse HEAD)
         grep -En "project: ['\"]?$PROJECT" "$1" | while read -r LINE; do
             LINE_NO=$(echo "$LINE" | sed -E "s|^([0-9]+).*|\1|")
             LINES="$((LINE_NO+1)),$((LINE_NO+2))"
