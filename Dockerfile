@@ -21,7 +21,7 @@ RUN curl -fLSs https://nodejs.org/dist/v$NODEJS_VERSION/node-v$NODEJS_VERSION-li
 # install npm packages (linters for test:flywheel-lint)
 RUN npm install --global \
         jsonlint-newline-fork@1.6.8 \
-        markdownlint-cli@0.27.1 \
+        markdownlint-cli@0.28.1 \
     ; \
     rm -rf ~/.config ~/.npm
 
