@@ -7,10 +7,11 @@
 #   https://grafana.ops.flywheel.io/d/8si-2YFGz/cluster-version
 
 replace DOCKER_VERSION=.* DOCKER_VERSION="$(latest_version git docker/engine '^v')"
-replace DOCKER_COMPOSE_VERSION=.* DOCKER_COMPOSE_VERSION="$(latest_version git docker/compose '^[0-9]')"
-replace PUSHRM_VERSION=.* PUSHRM_VERSION="$(latest_version git christian-korneck/docker-pushrm)"
+replace DOCKER_COMPOSE_VERSION=.* DOCKER_COMPOSE_VERSION="$(latest_version git docker/compose)"
+replace HADOLINT_VERSION=.* HADOLINT_VERSION="$(latest_version git hadolint/hadolint)"
 replace HELM_VERSION=.* HELM_VERSION="$(latest_version git helm/helm v3.3)"
 replace HELM_DOCS_VERSION=.* HELM_DOCS_VERSION="$(latest_version git norwoodj/helm-docs v1.5)"
 replace KUBEVAL_VERSION=.* KUBEVAL_VERSION="$(latest_version git instrumenta/kubeval)"
+replace POETRY_VERSION=.* POETRY_VERSION="$(latest_version git python-poetry/poetry)"
+replace PUSHRM_VERSION=.* PUSHRM_VERSION="$(latest_version git christian-korneck/docker-pushrm)"
 replace SHELLCHECK_VERSION=.* SHELLCHECK_VERSION="$(latest_version git koalaman/shellcheck)"
-replace HADOLINT_VERSION=.* HADOLINT_VERSION="$(latest_version git hadolint/hadolint)"

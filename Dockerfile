@@ -25,16 +25,6 @@ RUN npm install --global \
     ; \
     rm -rf ~/.config ~/.npm
 
-# install npm packages (linters for test:flywheel-lint)
-RUN pip install --no-cache-dir \
-    black==21.7b0 \
-    hadolintw==1.2.1 \
-    pre-commit==2.13.0 \
-    pydocstyle==6.1.1 \
-    pyyaml==5.4.1 \
-    safety==1.10.3 \
-    yamllint==1.26.1
-
 # docker client for dind usage (eg. publish:docker)
 ENV DOCKER_VERSION=19.03.13
 RUN curl -fLSs https://download.docker.com/linux/static/stable/x86_64/docker-$DOCKER_VERSION.tgz | \
@@ -77,6 +67,11 @@ RUN pip install --no-cache-dir openapi2jsonschema==0.9.1; \
         https://github.com/kubernetes/kubernetes/raw/v$KUBERNETES/api/openapi-spec/swagger.json
 
 WORKDIR /
+ENV POETRY_VERSION=1.1.7
+RUN pip install --no-cache-dir poetry==$POETRY_VERSION
+COPY poetry.lock pyproject.toml /
+RUN poetry config virtualenvs.create false && poetry install
+
 COPY qa_ci/ /
 ENTRYPOINT []
 CMD ["/bin/bash"]

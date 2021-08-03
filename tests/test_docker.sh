@@ -17,12 +17,6 @@ main() {
         run_tests
     fi
 }
-trap cleanup_link_check EXIT
-
-
-cleanup_link_check() {
-  rm -rf ./test_links
-}
 
 
 run_container() {
@@ -65,7 +59,6 @@ run_tests() {
     test -n "${KUBERNETES:-}" || die "KUBERNETES envvar not set"
     quiet ls /etc/kubeval/*/ || die "K8S schema not found"
     test_latest_img
-    test_link_check
     test_update_refs
 }
 
@@ -134,42 +127,6 @@ test_update_refs() {
             die "test_update_refs[$YAML] fail - expected $REGEX"
         fi
     done
-}
-
-
-test_link_check() {
-    log "test_link_check creating test data"
-    # Create test data
-    mkdir ./test_links
-    touch ./test_links/TEST_README.md
-    # Must break urls to be ignored by real link check hook
-    { echo -n "[\`flywheel\`](http"; echo "s://flywheel.io)"; } >> ./test_links/TEST_README.md
-    echo "[\`test\`](test.py)" >> ./test_links/TEST_README.md
-    touch ./test_links/test.py
-    { echo -n "# works http"; echo "s://flywheel.io"; } >> ./test_links/test.py
-    { echo -n "#   htt"; echo "ps://wrong.io"; } >> ./test_links/test.py
-
-    export FLYWHEEL_LINK_CHECK_INC="test_links"
-    export FORCE_ASCII=true
-    EXPECTED=(
-      "OK: /src/test_links/TEST_README.md: test.py"
-      "OK: /src/test_links/TEST_README.md: https://flywheel.io"
-      "OK: /src/test_links/test.py: https://flywheel.io"
-      "FAIL: /src/test_links/test.py: https://wrong.io"
-    )
-    log "test_link_check"
-    i=0
-    while read -r LINE; do
-      if echo "$LINE" | grep -Eq "${EXPECTED[i]}"; then
-          log "test_link_check[$LINE] pass"
-      else
-          die "test_link_check[$LINE] fail - expected ${EXPECTED[i]}"
-      fi
-      i=$((i+1))
-    done < <(python /lint/link_check.py)
-    if [ $i = 0 ]; then
-      die "test_link_check fail - did not iterate"
-    fi
 }
 
 
