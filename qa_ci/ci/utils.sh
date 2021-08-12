@@ -46,8 +46,9 @@ _latest_npm_version() {
 _latest_git_version() {
     for PAGE in $(seq 3); do
         TAG=$(_curl "https://api.github.com/repos/$1/tags?page=$PAGE" \
-            | jq -r '.[].name' | grep -Ev 'alpha|beta|dev|rc|stable|latest' \
-            | grep -E "${2:-.*}" | sed -E 's/^v//' | sort -rV | head -n1)
+            | jq -r '.[].name' \
+            | grep -Ev 'alpha|beta|dev|rc|stable|latest|list|help' \
+            | grep -E "${2:-.*}" | sed -E 's|^v||' | sort -rV | head -n1)
         test -z "$TAG" || break
     done
     test -n "$TAG" || die "Could not find latest tag for $1"

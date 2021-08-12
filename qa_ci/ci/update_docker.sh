@@ -108,7 +108,7 @@ _get_cmd_args() {
                 echo "$ARG" | grep -Eqv '\.txt$' || continue  # pip requirements.txt
                 echo "$ARG"
             done
-        done < <(echo "${LINE:4}" | tr ";" "\n" | sed "s/&&/\n/")
+        done < <(echo "${LINE:4}" | sed -E "s/(;|&&)/\n/g")
     done <"$DOCKERFILE"
 }
 
