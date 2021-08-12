@@ -7,3 +7,5 @@ repos:
       # https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting
       # - id: update:repo
       - id: publish:docker:test
+      - id: test:pre-commit:pylint
+      - id: test:pre-commit:pytest
