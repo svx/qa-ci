@@ -1,4 +1,4 @@
-FROM flywheel/python:master.1b04583c
+FROM flywheel/python:master.302cc9b4
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
 
@@ -29,11 +29,11 @@ RUN npm install --global \
 RUN pip install --no-cache-dir \
     black==21.7b0 \
     hadolintw==1.2.1 \
-    pre-commit==2.13.0 \
+    pre-commit==2.14.0 \
     pydocstyle==6.1.1 \
     pyyaml==5.4.1 \
     safety==1.10.3 \
-    yamllint==1.26.1
+    yamllint==1.26.2
 
 # docker client for dind usage (eg. publish:docker)
 ENV DOCKER_VERSION=19.03.13

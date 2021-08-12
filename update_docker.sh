@@ -13,4 +13,5 @@ replace HELM_VERSION=.* HELM_VERSION="$(latest_version git helm/helm v3.3)"
 replace HELM_DOCS_VERSION=.* HELM_DOCS_VERSION="$(latest_version git norwoodj/helm-docs v1.5)"
 replace KUBEVAL_VERSION=.* KUBEVAL_VERSION="$(latest_version git instrumenta/kubeval)"
 replace SHELLCHECK_VERSION=.* SHELLCHECK_VERSION="$(latest_version git koalaman/shellcheck)"
-replace HADOLINT_VERSION=.* HADOLINT_VERSION="$(latest_version git hadolint/hadolint)"
+# pin hadolint for now because latest tag does not have a release
+# replace HADOLINT_VERSION=.* HADOLINT_VERSION="$(latest_version git hadolint/hadolint)"
