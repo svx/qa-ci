@@ -3,8 +3,10 @@
 import argparse
 import os
 import re
+import sys
 
 import requests
+
 
 def main(args=None):
     """Get changelog."""
@@ -24,7 +26,7 @@ def main(args=None):
         print("'CI_COMMIT_MESSAGE' is empty")
         sys.exit(1)
 
-    mr_id = re.match(r"!([0-9]+)", commit_message)
+    mr_id = re.search(r"!([0-9]+)", commit_message)
     if not mr_id:
         print(f"Could not find MR ID in {commit_message}")
         sys.exit(1)
@@ -36,8 +38,8 @@ def main(args=None):
             f"iids[]={mr_id}"
         )
         headers = {
-            'Content-Type': 'application/json',
-            'Private-Toke': os.environ.get("GITLAB_CI_BOT_TOKEN")
+            "Content-Type": "application/json",
+            "Private-Toke": os.environ.get("GITLAB_CI_BOT_TOKEN"),
         }
 
         resp = sess.get(url, allow_redirects=True, timeout=10, headers=headers)
@@ -47,11 +49,14 @@ def main(args=None):
         description = resp.json()[0]["description"]
         if args.full:
             print(description)
-            sys.exit(0)
+            return
 
-        description_body = re.match(r"^(.*)\*{3,}", description)
-        print(description_body)
+        description_body = re.match(r"(.*)\*{3,}", description, re.S)
+        if not description_body:
+            print(description)
+            return
+        print(description_body.groups()[0].strip())
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

@@ -30,10 +30,7 @@ def main(args=None):
 
     repo = git.repo.Repo("./")
     if not rev1:
-        try:
-            rev1 = repo.git.describe(abbrev=0, tags=True)
-        except git.exc.GitCommandError:
-            rev1 = "origin"
+        rev1 = repo.git.describe(abbrev=0, tags=True)
     if not rev2:
         rev2 = "HEAD"
 
@@ -55,5 +52,5 @@ def main(args=None):
             print("    - " + " ".join(sorted(issue_numbers)))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

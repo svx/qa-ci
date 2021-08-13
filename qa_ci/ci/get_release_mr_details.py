@@ -3,10 +3,12 @@
 import argparse
 import os
 import re
+import sys
 
 import requests
 
 INFRA_REPO = "flywheel-io%2Finfrastructure%2Frelease"
+
 
 def main(args=None):
     """Get changelog."""
@@ -22,9 +24,9 @@ def main(args=None):
     args = parser.parse_args(args)
 
     component = os.environ.get("FW_RELEASE_COMPONENT")
-    if not commit_message:
+    if not component:
         print("No FW_RELEASE_COMPONENT set, exiting")
-        sys.exit(0)
+        return
 
     with requests.Session() as sess:
         url = (
@@ -33,8 +35,8 @@ def main(args=None):
             "state=opened&target_branch=master"
         )
         headers = {
-            'Content-Type': 'application/json',
-            'Private-Toke': os.environ.get("GITLAB_CI_BOT_TOKEN")
+            "Content-Type": "application/json",
+            "Private-Toke": os.environ.get("GITLAB_CI_BOT_TOKEN"),
         }
 
         resp = sess.get(url, allow_redirects=True, timeout=10, headers=headers)
@@ -44,12 +46,15 @@ def main(args=None):
 
         if len(resp.json()) < 1:
             print(f"No open MR found in {INFRA_REPO} repository.")
-            sys.exit(0)
+            return
 
-        fw_release_branch=resp.json()[0]["source_branch"]
-        fw_release_commit=f"fix: update {component} version to {args.version}"
+        fw_release_branch = resp.json()[0]["source_branch"]
+        fw_release_commit = f"fix: update {component} version to {args.version}"
 
-        print(f">>>\nFW_RELEASE_BRANCH=\"{fw_release_branch}\"\nFW_RELEASE_COMMIT=\"{fw_release_commit}\"\n>>>")
+        print(
+            f'>>>\nFW_RELEASE_BRANCH="{fw_release_branch}"\nFW_RELEASE_COMMIT="{fw_release_commit}"\n>>>'
+        )
 
-if __name__ == "__main__":
+
+if __name__ == "__main__":  # pragma: no cover
     main()
