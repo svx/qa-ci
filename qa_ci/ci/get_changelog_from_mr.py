@@ -39,7 +39,7 @@ def main(args=None):
         )
         headers = {
             "Content-Type": "application/json",
-            "Private-Toke": os.environ.get("GITLAB_CI_BOT_TOKEN"),
+            "Private-Token": os.environ.get("GITLAB_CI_BOT_TOKEN"),
         }
 
         resp = sess.get(url, allow_redirects=True, timeout=10, headers=headers)
