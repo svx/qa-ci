@@ -8,7 +8,7 @@ import re
 import git
 
 
-def main(args):
+def main(args=None):
     """Get changelog."""
     parser = argparse.ArgumentParser(
         description="Generate a changelog (markdown) from the merge commits found in a revision range."
@@ -38,16 +38,14 @@ def main(args):
         rev2 = "HEAD"
 
     revs = repo.git.log(f"{rev1}..{rev2}", merges=True, format="%h")
-
     merge_req_data = {}
     for rev in iter(revs.splitlines()):
         log = repo.git.show(rev, format="%b")
-        mr_no = re.match(r"See merge request.*(![\d]+)", log)
+        mr_no = re.search(r"See merge request.*(![\d]+)", log)
         if mr_no:
-            mr_no = mr_no.grpups()[0]
+            mr_no = mr_no.groups()[0]
         else:
             mr_no = ""
-
         issue_numbers = set()
         for match in re.finditer(r"\[\s*(FLYW)\s*-\s*([\d]+)\s*\]", log, re.IGNORECASE):
             issue_numbers.add(f"{match.groups()[0]}-{match.groups()[1]}")

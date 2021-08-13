@@ -1,4 +1,4 @@
-FROM flywheel/python:master.c6ec2360
+FROM flywheel/python:master.1b04583c
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
 
@@ -21,22 +21,9 @@ RUN curl -fLSs https://nodejs.org/dist/v$NODEJS_VERSION/node-v$NODEJS_VERSION-li
 # install npm packages (linters for test:flywheel-lint)
 RUN npm install --global \
         jsonlint-newline-fork@1.6.8 \
-        markdownlint-cli@0.27.1 \
+        markdownlint-cli@0.28.1 \
     ; \
     rm -rf ~/.config ~/.npm
-
-# install npm packages (linters for test:flywheel-lint)
-RUN pip install --no-cache-dir \
-    black==21.6b0 \
-    hadolintw==1.2.1 \
-    pre-commit==2.13.0 \
-    pydocstyle==6.1.1 \
-    pyyaml==5.4.1 \
-    safety==1.10.3 \
-    yamllint==1.26.1 \
-    GitPython==3.1.18 \
-    pytest==6.2.4 \
-    requests==2.26.0
 
 # docker client for dind usage (eg. publish:docker)
 ENV DOCKER_VERSION=19.03.13
@@ -49,7 +36,7 @@ RUN curl -fLSso docker-compose https://github.com/docker/compose/releases/downlo
     chmod +x docker-compose
 
 # docker plugin for updating dockerhub image readmes
-ENV PUSHRM_VERSION=1.7.0
+ENV PUSHRM_VERSION=1.8.0
 RUN curl -fLSso docker-pushrm https://github.com/christian-korneck/docker-pushrm/releases/download/v$PUSHRM_VERSION/docker-pushrm_linux_amd64; \
     chmod +x docker-pushrm; \
     mkdir -p /root/.docker/cli-plugins; \
@@ -80,6 +67,11 @@ RUN pip install --no-cache-dir openapi2jsonschema==0.9.1; \
         https://github.com/kubernetes/kubernetes/raw/v$KUBERNETES/api/openapi-spec/swagger.json
 
 WORKDIR /
+ENV POETRY_VERSION=1.1.7
+RUN pip install --no-cache-dir poetry==$POETRY_VERSION
+COPY poetry.lock pyproject.toml /
+RUN poetry config virtualenvs.create false && poetry install
+
 COPY qa_ci/ /
 ENTRYPOINT []
 CMD ["/bin/bash"]

@@ -1,2 +1,4 @@
 **
 !qa_ci
+!poetry.lock
+!pyproject.toml

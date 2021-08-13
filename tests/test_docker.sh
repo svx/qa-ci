@@ -52,7 +52,7 @@ run_tests() {
     for BIN in "${EXPECTED_BIN[@]}"; do
         quiet command -v "$BIN" || die "Command not found: $BIN"
     done
-    for SCRIPT in /lint/run.sh /helm/run.sh /ci/*.sh; do
+    for SCRIPT in /lint/link_check.py /lint/run.sh /helm/run.sh /ci/*.sh; do
         test -x "$SCRIPT" || die "Script is not executable: $SCRIPT"
     done
     test "$(id -u):$(id -g)" = 0:0 || die "Not running as root"

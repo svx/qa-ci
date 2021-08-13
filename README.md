@@ -63,8 +63,8 @@ default config location if it exists at the project root:
 
 If not present, the following config files are auto-injected:
 
-- [`.markdownlint.json`](lint/.markdownlint.json)
-- [`.yamllint.yml`](lint/.yamllint.yml)
+- [`.markdownlint.json`](qa_ci/lint/.markdownlint.json)
+- [`.yamllint.yml`](qa_ci/lint/.yamllint.yml)
 
 ### `test:helm-check`
 

@@ -15,7 +15,7 @@ export IMAGE_RE='[[:alnum:]]+[[:alnum:]/:.-]+[[:alnum:]]'
 log() { printf "\e[32mINFO\e[0m %s\n" "$*" >&2; }
 err() { printf "\e[31mERRO\e[0m %s\n" "$*" >&2; }
 die() { err "$@"; exit 1; }
-quiet() { "$@" >/dev/null 2>&1; }
+quiet() { if [ -z "${TRACE:-}" ]; then "$@" >/dev/null 2>&1; else "$@" >&2; fi }
 strip() { sed -E 's/^([[:space:]]*)//;s/([[:space:]]*)$//'; }
 
 # gitlab repo cloning helper
