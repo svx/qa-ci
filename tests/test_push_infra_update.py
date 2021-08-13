@@ -15,8 +15,4 @@ def test_replace():
     replace(tmp.name, "key2:.*", "key2.1: value2.1")
 
     with open(tmp.name) as fp:
-        assert fp.read() == (
-            "key1: value1\n"
-            "key2.1: value2.1\n"
-            "key3: value3"
-        )
+        assert fp.read() == ("key1: value1\n" "key2.1: value2.1\n" "key3: value3")
