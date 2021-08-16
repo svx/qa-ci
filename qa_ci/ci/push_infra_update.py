@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 """Update the infrastructure/release repository."""
 import argparse
+import logging
 import os
 import re
 
 import requests
+import fw_logging
 
 from qa_ci.ci.get_changelog_from_mr import main as mr_chlog_main
 
 INFRA_REPO = "git@gitlab.com:flywheel-io/infrastructure/release.git"
+
+fw_logging.setup_logging(handler="stderr")
+log = logging.getLogger(__name__)
 
 
 def replace(file, search, replace):
@@ -36,7 +41,7 @@ def main(args=None):  # pragma: no cover
 
     component = os.environ.get("FW_RELEASE_COMPONENT")
     if not component:
-        print("No FW_RELEASE_COMPONENT set, exiting")
+        log.warning("No FW_RELEASE_COMPONENT set, exiting")
         sys.exit(1)
 
     commit_message = mr_chlog_main(["--full"])
@@ -44,7 +49,9 @@ def main(args=None):  # pragma: no cover
         r"FW_RELEASE_BRANCH=\"(.*)\"\s*FW_RELEASE_COMMIT=\"(.*)\"", commit_message
     )
     if not match:
-        print("Could not extract FW_RELEASE_BRANCH and FW_RELEASE_COMMIT, exiting")
+        log.warning(
+            "Could not extract FW_RELEASE_BRANCH and FW_RELEASE_COMMIT, exiting"
+        )
         return
 
     fw_release_branch = match.grpups()[0]

@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """Get changelog from the MR's description."""
 import argparse
+import logging
 import os
 import re
 import sys
 
 import requests
+import fw_logging
+
+fw_logging.setup_logging(handler="stderr")
+log = logging.getLogger(__name__)
 
 
 def main(args=None):
@@ -28,7 +33,7 @@ def main(args=None):
 
     mr_id = re.search(r"!([0-9]+)", commit_message)
     if not mr_id:
-        print(f"Could not find MR ID in {commit_message}")
+        log.error(f"Could not find MR ID in {commit_message}")
         sys.exit(1)
 
     with requests.Session() as sess:
@@ -44,7 +49,7 @@ def main(args=None):
 
         resp = sess.get(url, allow_redirects=True, timeout=10, headers=headers)
         if not resp.ok:
-            print(f"Response is not successful: {resp.content}")
+            log.error(f"Response is not successful: {resp.content}")
             sys.exit(1)
         description = resp.json()[0]["description"]
         if args.full:

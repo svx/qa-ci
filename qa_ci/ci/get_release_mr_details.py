@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 """Get FW_RELEASE_BRANCH and FW_RELEASE_COMMIT details."""
 import argparse
+import logging
 import os
 import re
 import sys
 
 import requests
+import fw_logging
 
 INFRA_REPO = "flywheel-io%2Finfrastructure%2Frelease"
+
+fw_logging.setup_logging(handler="stderr")
+log = logging.getLogger(__name__)
 
 
 def main(args=None):
@@ -25,7 +30,7 @@ def main(args=None):
 
     component = os.environ.get("FW_RELEASE_COMPONENT")
     if not component:
-        print("No FW_RELEASE_COMPONENT set, exiting")
+        log.warning("No FW_RELEASE_COMPONENT set, exiting")
         return
 
     with requests.Session() as sess:
@@ -41,11 +46,11 @@ def main(args=None):
 
         resp = sess.get(url, allow_redirects=True, timeout=10, headers=headers)
         if not resp.ok:
-            print(f"Response is not successful: {resp.content}")
+            log.error(f"Response is not successful: {resp.content}")
             sys.exit(1)
 
         if len(resp.json()) < 1:
-            print(f"No open MR found in {INFRA_REPO} repository.")
+            log.warning(f"No open MR found in {INFRA_REPO} repository.")
             return
 
         fw_release_branch = resp.json()[0]["source_branch"]
