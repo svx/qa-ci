@@ -49,12 +49,13 @@ def main(args=None):
             log.error(f"Response is not successful: {resp.content}")
             sys.exit(1)
 
+        fw_release_commit = f"fix: update {component} version to {args.version}"
+
         if len(resp.json()) < 1:
             log.warning(f"No open MR found in {INFRA_REPO} repository.")
-            return
-
-        fw_release_branch = resp.json()[0]["source_branch"]
-        fw_release_commit = f"fix: update {component} version to {args.version}"
+            fw_release_branch = ""
+        else:
+            fw_release_branch = resp.json()[0]["source_branch"]
 
         print(
             f'>>>\nFW_RELEASE_BRANCH="{fw_release_branch}"\nFW_RELEASE_COMMIT="{fw_release_commit}"\n>>>'

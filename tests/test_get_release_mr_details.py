@@ -29,14 +29,13 @@ def test_normal(mocker, capsys):
     )
 
 
-def test_no_component(mocker, capsys):
+def test_no_component(mocker, caplog):
     os.environ["FW_RELEASE_COMPONENT"] = ""
     main(["1.2.3"])
-    captured = capsys.readouterr()
-    assert captured.out == "No FW_RELEASE_COMPONENT set, exiting\n"
+    assert "No FW_RELEASE_COMPONENT set, exiting" in caplog.text
 
 
-def test_failed_request(mocker, capsys):
+def test_failed_request(mocker, caplog):
     os.environ["FW_RELEASE_COMPONENT"] = "component"
     os.environ["CI_API_V4_URL"] = "CI_API_V4_URL"
     os.environ["GITLAB_CI_BOT_TOKEN"] = "GITLAB_CI_BOT_TOKEN"
@@ -53,11 +52,10 @@ def test_failed_request(mocker, capsys):
 
     with pytest.raises(SystemExit):
         main(["1.2.3"])
-        captured = capsys.readouterr()
-        assert captured.out == "Response is not successful: error content"
+        assert "Response is not successful: error content" in caplog.text
 
 
-def test_no_mr(mocker, capsys):
+def test_no_mr(mocker, caplog):
     os.environ["FW_RELEASE_COMPONENT"] = "component"
     os.environ["CI_API_V4_URL"] = "CI_API_V4_URL"
     os.environ["GITLAB_CI_BOT_TOKEN"] = "GITLAB_CI_BOT_TOKEN"
@@ -73,8 +71,7 @@ def test_no_mr(mocker, capsys):
     session_mock.get.return_value = resp
     main(["1.2.3"])
 
-    captured = capsys.readouterr()
     assert (
-        captured.out
-        == "No open MR found in flywheel-io%2Finfrastructure%2Frelease repository.\n"
+        "No open MR found in flywheel-io%2Finfrastructure%2Frelease repository."
+        in caplog.text
     )

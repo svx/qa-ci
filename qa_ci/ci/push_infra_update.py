@@ -4,9 +4,11 @@ import argparse
 import logging
 import os
 import re
+import sys
 
-import requests
 import fw_logging
+import git
+import requests
 
 from qa_ci.ci.get_changelog_from_mr import main as mr_chlog_main
 
@@ -26,7 +28,7 @@ def replace(file, search, replace):
         fp.write(content)
 
 
-def main(args=None):  # pragma: no cover
+def main(args=None):
     """Get changelog."""
     parser = argparse.ArgumentParser(
         description="Update the infrastructure/release repository"
@@ -37,6 +39,11 @@ def main(args=None):  # pragma: no cover
         type=str,
         help="Release version",
     )
+    parser.add_argument(
+        "--commit-message",
+        help="Commit message",
+    )
+
     args = parser.parse_args(args)
 
     component = os.environ.get("FW_RELEASE_COMPONENT")
@@ -44,8 +51,12 @@ def main(args=None):  # pragma: no cover
         log.warning("No FW_RELEASE_COMPONENT set, exiting")
         sys.exit(1)
 
-    commit_message = mr_chlog_main(["--full"])
-    match = re.match(
+    if args.commit_message:
+        commit_message = args.commit_message
+    else:
+        commit_message = mr_chlog_main(["--full"])
+
+    match = re.search(
         r"FW_RELEASE_BRANCH=\"(.*)\"\s*FW_RELEASE_COMMIT=\"(.*)\"", commit_message
     )
     if not match:
@@ -54,15 +65,16 @@ def main(args=None):  # pragma: no cover
         )
         return
 
-    fw_release_branch = match.grpups()[0]
-    fw_release_commit = match.grpups()[1]
+    fw_release_branch = match.groups()[0]
+    fw_release_commit = match.groups()[1]
 
-    repo = git.repo.Repo("./release_repo")
-    repo.clone_from(INFRA_REPO)
-    repo.git.checkout(fw_release_branch)
+    repo = git.repo.Repo.clone_from(
+        INFRA_REPO, "./release_repo", branch=fw_release_branch
+    )
 
     replace(
-        "./release_repo/.gitlab-ci.yml" f"RELEASECI_{component}_VERSION:.*",
+        "./release_repo/.gitlab-ci.yml",
+        f"RELEASECI_{component}_VERSION:.*",
         f"RELEASECI_{component}_VERSION: {args.version}",
     )
 

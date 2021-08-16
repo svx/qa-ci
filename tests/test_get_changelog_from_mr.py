@@ -69,15 +69,14 @@ def test_normal_full(mocker, capsys):
     assert captured.out == "Some\nValue\n***\nOther\nValue\n"
 
 
-def test_empty_commit(mocker, capsys):
+def test_empty_commit(mocker, caplog):
     os.environ["CI_COMMIT_MESSAGE"] = ""
     with pytest.raises(SystemExit):
         main([])
-        captured = capsys.readouterr()
-        assert captured.out == "'CI_COMMIT_MESSAGE' is empty"
+        assert "'CI_COMMIT_MESSAGE' is empty" in caplog.text
 
 
-def test_failed_request(mocker, capsys):
+def test_failed_request(mocker, caplog):
     os.environ["CI_COMMIT_MESSAGE"] = "Commit msg !20"
     os.environ["CI_API_V4_URL"] = "CI_API_V4_URL"
     os.environ["CI_PROJECT_ID"] = "CI_PROJECT_ID"
@@ -95,11 +94,10 @@ def test_failed_request(mocker, capsys):
 
     with pytest.raises(SystemExit):
         main([])
-        captured = capsys.readouterr()
-        assert captured.out == "Response is not successful: error content"
+        assert "Response is not successful: error content" in caplog.text
 
 
-def test_no_mrid(mocker, capsys):
+def test_no_mrid(mocker, caplog):
     os.environ["CI_COMMIT_MESSAGE"] = "Commit msg"
     os.environ["CI_API_V4_URL"] = "CI_API_V4_URL"
     os.environ["CI_PROJECT_ID"] = "CI_PROJECT_ID"
@@ -107,5 +105,4 @@ def test_no_mrid(mocker, capsys):
 
     with pytest.raises(SystemExit):
         main([])
-        captured = capsys.readouterr()
-        assert captured.out == "Could not find MR ID in Commit msg\n"
+        assert "Could not find MR ID in Commit msg" in caplog.text

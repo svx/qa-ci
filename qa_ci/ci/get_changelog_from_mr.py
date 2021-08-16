@@ -28,7 +28,7 @@ def main(args=None):
 
     commit_message = os.environ.get("CI_COMMIT_MESSAGE")
     if not commit_message:
-        print("'CI_COMMIT_MESSAGE' is empty")
+        log.error("'CI_COMMIT_MESSAGE' is empty")
         sys.exit(1)
 
     mr_id = re.search(r"!([0-9]+)", commit_message)
