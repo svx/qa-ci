@@ -76,11 +76,11 @@ test_latest_img() {
         "ubuntu:18.04           ubuntu:bionic-$DATE"
         "ubuntu:bionic-20210325 ubuntu:bionic-$DATE"
 
-        "python        python:$VER-buster"
-        "python:latest python:$VER-buster"
-        "python:3      python:$VER-buster"
-        "python:3.8    python:$VER-buster"
-        "python:3.8.8  python:$VER-buster"
+        "python        python:$VER-bullseye"
+        "python:latest python:$VER-bullseye"
+        "python:3      python:$VER-bullseye"
+        "python:3.8    python:$VER-bullseye"
+        "python:3.8.8  python:$VER-bullseye"
 
         "python:alpine           python:$VER-alpine$VER"
         "python:3-alpine         python:$VER-alpine$VER"
