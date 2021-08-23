@@ -1,4 +1,4 @@
-FROM flywheel/python:master.d6125e46
+FROM flywheel/python:master.2f8d3e7e
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
 
@@ -33,7 +33,7 @@ RUN pip install --no-cache-dir \
     pydocstyle==6.1.1 \
     pyyaml==5.4.1 \
     safety==1.10.3 \
-    yamllint==1.26.2
+    yamllint==1.26.3
 
 # docker client for dind usage (eg. publish:docker)
 ENV DOCKER_VERSION=19.03.13
