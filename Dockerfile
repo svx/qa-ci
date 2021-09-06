@@ -29,7 +29,7 @@ RUN npm install --global \
 RUN pip install --no-cache-dir \
     black==21.8b0 \
     hadolintw==1.2.1 \
-    pre-commit==2.14.1 \
+    pre-commit==2.15.0 \
     pydocstyle==6.1.1 \
     pyyaml==5.4.1 \
     safety==1.10.3 \
