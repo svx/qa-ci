@@ -1,11 +1,16 @@
-FROM flywheel/python:master.2f8d3e7e
+FROM flywheel/python:master.25269f00
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
+
+# add build-essential (make, gcc, etc.)
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends build-essential=12.6; \
+    rm -rf /var/lib/apt/lists/*
 
 # shellcheck for shell script linting (for test:flywheel-lint)
 ENV SHELLCHECK_VERSION=0.7.2
 RUN curl -fLSs https://github.com/koalaman/shellcheck/releases/download/v$SHELLCHECK_VERSION/shellcheck-v$SHELLCHECK_VERSION.linux.x86_64.tar.xz \
-        | tar -xJ --strip-components=1 shellcheck-v$SHELLCHECK_VERSION/shellcheck
+        | tar xJ --strip-components=1 shellcheck-v$SHELLCHECK_VERSION/shellcheck
 
 # hadolint for dockerfile linting (requires shellcheck - for test:flywheel-lint)
 ENV HADOLINT_VERSION=2.6.0
