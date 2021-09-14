@@ -43,11 +43,13 @@ run_tests() {
         helm-docs
         jsonlint
         kubeval
+        make
         markdownlint
         pre-commit
         pydocstyle
         safety
         yamllint
+        zstd
     )
     for BIN in "${EXPECTED_BIN[@]}"; do
         quiet command -v "$BIN" || die "Command not found: $BIN"

@@ -7,6 +7,14 @@ RUN apt-get update; \
     apt-get install -y --no-install-recommends build-essential=12.6; \
     rm -rf /var/lib/apt/lists/*
 
+# add zstandard compression alg
+ENV ZSTD_VERSION=1.5.0
+RUN curl -fLSs https://github.com/facebook/zstd/releases/download/v$ZSTD_VERSION/zstd-$ZSTD_VERSION.tar.gz \
+        | tar xz; \
+    make -C zstd-$ZSTD_VERSION -j"$(nproc)"; \
+    mv zstd-$ZSTD_VERSION/programs/zstd* ./; \
+    rm -rf zstd-$ZSTD_VERSION
+
 # shellcheck for shell script linting (for test:flywheel-lint)
 ENV SHELLCHECK_VERSION=0.7.2
 RUN curl -fLSs https://github.com/koalaman/shellcheck/releases/download/v$SHELLCHECK_VERSION/shellcheck-v$SHELLCHECK_VERSION.linux.x86_64.tar.xz \
@@ -32,7 +40,7 @@ RUN npm install --global \
 
 # install npm packages (linters for test:flywheel-lint)
 RUN pip install --no-cache-dir \
-    black==21.8b0 \
+    black==21.9b0 \
     hadolintw==1.2.1 \
     pre-commit==2.15.0 \
     pydocstyle==6.1.1 \
