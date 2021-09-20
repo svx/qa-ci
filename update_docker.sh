@@ -6,7 +6,7 @@
 # Using a helm version compiled against the most recent prod deployment version:
 #   https://grafana.ops.flywheel.io/d/8si-2YFGz/cluster-version
 
-replace ZSTD_VERSION=.* ZSTD_VERSION="$(latest_version git facebook/zstd)"
+replace ZSTD_VERSION=.* ZSTD_VERSION="$(latest_version git facebook/zstd '^v')"
 replace DOCKER_VERSION=.* DOCKER_VERSION="$(latest_version git docker/engine '^v')"
 replace DOCKER_COMPOSE_VERSION=.* DOCKER_COMPOSE_VERSION="$(latest_version git docker/compose '^[0-9]')"
 replace PUSHRM_VERSION=.* PUSHRM_VERSION="$(latest_version git christian-korneck/docker-pushrm)"
