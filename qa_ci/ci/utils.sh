@@ -89,11 +89,11 @@ _latest_img_version() {
     test -n "$NEW_DIGEST" || die "No digest found for $REPO:$FLOATING_TAG"
     # find the most specific tag with the same digest
     for PAGE in $(seq 3); do
-        NEW_TAG=$(_curl "$TAGS_URL?ordering=last_updated&page_size=100&page=$PAGE" \
-            | jq -r ".results[] | select(.images[].digest == \"$NEW_DIGEST\") | .name" \
-            | grep -v latest | _sort_img | head -n1)
-        test -z "$NEW_TAG" || break
+        TAGS+=$(_curl "$TAGS_URL?ordering=last_updated&page_size=100&page=$PAGE" \
+            | jq -r ".results[] | select(.images[].digest == \"$NEW_DIGEST\") | .name")
+        TAGS+=$'\n'
     done
+    NEW_TAG=$(echo "$TAGS"| grep -v latest | _sort_img | head -n1)
     if test -z "$NEW_TAG"; then
         err "Cannot find new docker tag for $REPO:$OLD_TAG"
         echo "$REPO:$OLD_TAG"
