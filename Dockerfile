@@ -1,4 +1,4 @@
-FROM flywheel/python:master.7f134f22
+FROM flywheel/python:master.83a6d0b3
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
 
@@ -44,7 +44,7 @@ RUN pip install --no-cache-dir \
     hadolintw==1.2.1 \
     pre-commit==2.15.0 \
     pydocstyle==6.1.1 \
-    pyyaml==5.4.1 \
+    pyyaml==6.0 \
     safety==1.10.3 \
     yamllint==1.26.3
 
