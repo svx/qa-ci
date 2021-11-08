@@ -1,4 +1,4 @@
-FROM flywheel/python:master.9746b723
+FROM flywheel/python:master.95728ed6
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
 
@@ -16,7 +16,7 @@ RUN curl -fLSs https://github.com/facebook/zstd/releases/download/v$ZSTD_VERSION
     rm -rf zstd-$ZSTD_VERSION
 
 # shellcheck for shell script linting (for test:flywheel-lint)
-ENV SHELLCHECK_VERSION=0.7.2
+ENV SHELLCHECK_VERSION=0.8.0
 RUN curl -fLSs https://github.com/koalaman/shellcheck/releases/download/v$SHELLCHECK_VERSION/shellcheck-v$SHELLCHECK_VERSION.linux.x86_64.tar.xz \
         | tar xJ --strip-components=1 shellcheck-v$SHELLCHECK_VERSION/shellcheck
 
@@ -40,7 +40,7 @@ RUN npm install --global \
 
 # install npm packages (linters for test:flywheel-lint)
 RUN pip install --no-cache-dir \
-    black==21.9b0 \
+    black==21.10b0 \
     hadolintw==1.2.1 \
     pre-commit==2.15.0 \
     pydocstyle==6.1.1 \
