@@ -1,4 +1,4 @@
-FROM flywheel/python:master.972b4370
+FROM flywheel/python:main.972b4370
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
 

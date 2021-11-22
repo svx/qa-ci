@@ -90,10 +90,10 @@ test_latest_img() {
         "python:3.8.8-alpine     python:$VER-alpine$VER"
         "python:3.8.8-alpine3.13 python:$VER-alpine$VER"
 
-        "flywheel/python                 flywheel/python:master\.$HASH"
-        "flywheel/python:latest          flywheel/python:master\.$HASH"
-        "flywheel/python:master          flywheel/python:master\.$HASH"
-        "flywheel/python:master.cc52122b flywheel/python:master\.$HASH"
+        "flywheel/python               flywheel/python:main\.$HASH"
+        "flywheel/python:latest        flywheel/python:main\.$HASH"
+        "flywheel/python:main          flywheel/python:main\.$HASH"
+        "flywheel/python:main.cc52122b flywheel/python:main\.$HASH"
     )
     for TEST in "${TESTS[@]}"; do
         IMAGE=$(echo "$TEST" | tr -s " " | cut -d" " -f1)

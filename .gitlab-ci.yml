@@ -1,4 +1,4 @@
 include:
   - project: flywheel-io/tools/etc/qa-ci
     file: ci/img.yml
-    ref: master
+    ref: main
