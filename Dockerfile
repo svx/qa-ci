@@ -1,4 +1,4 @@
-FROM flywheel/python:master.1b6b32ef
+FROM flywheel/python:master.972b4370
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
 
@@ -34,13 +34,13 @@ RUN curl -fLSs https://nodejs.org/dist/v$NODEJS_VERSION/node-v$NODEJS_VERSION-li
 # install npm packages (linters for test:flywheel-lint)
 RUN npm install --global \
         jsonlint-newline-fork@1.6.8 \
-        markdownlint-cli@0.29.0 \
+        markdownlint-cli@0.30.0 \
     ; \
     rm -rf ~/.config ~/.npm
 
 # install npm packages (linters for test:flywheel-lint)
 RUN pip install --no-cache-dir \
-    black==21.10b0 \
+    black==21.11b1 \
     hadolintw==1.2.1 \
     pre-commit==2.15.0 \
     pydocstyle==6.1.1 \
