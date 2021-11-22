@@ -12,7 +12,7 @@ main() {
     echo "$*" | grep -Eqvw -- "-h|--help|help" || { echo "$USAGE"; exit; }
     REV1=${1:-$(git describe --abbrev=0 --tags || true)}
     REV2=${2:-HEAD}
-    REVS=$(git log --merges --format="%h" "$REV1..$REV2")
+    REVS=$(git log --merges --grep="See merge request" --format="%h" "$REV1..$REV2")
     for REV in $REVS; do
         LOG=$(git show --format="%b" "$REV")
         MR_NO=$(echo "$LOG" | grep "See merge request" | grep -Eo '![0-9]+')
