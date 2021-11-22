@@ -1,6 +1,6 @@
 repos:
   - repo: git@gitlab.com:flywheel-io/tools/etc/qa-ci
-    rev: master
+    rev: main
     hooks:
       - id: test:flywheel-lint
       - id: publish:docker:test

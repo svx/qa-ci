@@ -25,7 +25,7 @@ git_clone() {
         && URL="https://oauth2:$GITLAB_CI_BOT_READ_TOKEN@gitlab.com/$1" \
         || URL="https://gitlab.com/$1"
     CLONE="/tmp/$1"
-    test -d "$CLONE" || git clone -q --depth 1 --branch master "$URL" "$CLONE"
+    test -d "$CLONE" || git clone -q --depth 1 "$URL" "$CLONE"
     echo "$CLONE"
 }
 
