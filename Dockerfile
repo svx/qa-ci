@@ -1,4 +1,4 @@
-FROM flywheel/python:main.d6a224b7
+FROM flywheel/python:main.9e0ada5a
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
 
@@ -40,9 +40,9 @@ RUN npm install --global \
 
 # install npm packages (linters for test:flywheel-lint)
 RUN pip install --no-cache-dir \
-    black==21.11b1 \
+    black==21.12b0 \
     hadolintw==1.2.1 \
-    pre-commit==2.15.0 \
+    pre-commit==2.16.0 \
     pydocstyle==6.1.1 \
     pyyaml==6.0 \
     safety==1.10.3 \
