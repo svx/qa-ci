@@ -10,7 +10,7 @@ docs and dependency updates.
 
 Options are expected in a key=value format (eg. title='My GitLab MR Title').
 See the list of available options below:
-https://docs.gitlab.com/ee/user/project/push_options.html#push-options-for-merge-requests
+https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
 "
 
 main() {
@@ -19,15 +19,16 @@ main() {
     git --no-pager diff -U0 --word-diff=color --exit-code && { echo "Nothing to commit"; exit; }
     BRANCH=$1 && shift
     TARGET=$1 && shift
-    MR_OPTS=(
-        -omerge_request.create
-        -omerge_request.target="$TARGET"
-        -omerge_request.remove_source_branch
-    )
-    for MR_OPT in "$@"; do MR_OPTS+=(-omerge_request."$MR_OPT"); done
     git checkout -B "$BRANCH"
     git commit -am "$BRANCH"
-    git push -f origin "$BRANCH" "${MR_OPTS[@]}"
+    git push -f origin "$BRANCH"
+    set -- "$@" source_branch="$BRANCH" target_branch="$TARGET" remove_source_branch=true
+    curl -fLSs "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests" \
+        -H "Private-Token: $GITLAB_CI_BOT_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d "$(gjo "$@")" | jq || CURL_STATUS="$?"
+    test "$CURL_STATUS" -ne 409 || { echo "MR already exists"; exit; }
+    test "$CURL_STATUS" -lt 400 || exit 1;
 }
 
 main "$@"
