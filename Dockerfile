@@ -35,6 +35,7 @@ RUN curl -fLSs https://nodejs.org/dist/v$NODEJS_VERSION/node-v$NODEJS_VERSION-li
 RUN npm install --global \
         jsonlint-newline-fork@1.6.8 \
         markdownlint-cli@0.30.0 \
+        markdown-link-check@3.9.0 \
     ; \
     rm -rf ~/.config ~/.npm
 

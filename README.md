@@ -21,6 +21,7 @@ docker run --rm -tv $(pwd):/src -w /src -e TRACE=1 flywheel/qa-ci /lint/run.sh
 - [`black`](https://github.com/psf/black)
 - [`hadolint`](https://github.com/hadolint/hadolint)
 - [`jsonlint`](https://www.npmjs.com/package/jsonlint)
+- [`linkcheck`](qa_ci/lint/linkcheck.sh)
 - [`markdownlint`](https://github.com/DavidAnson/markdownlint)
 - [`pydocstyle`](https://github.com/PyCQA/pydocstyle)
 - [`safety`](https://github.com/pyupio/safety)
@@ -55,6 +56,7 @@ default config location if it exists at the project root:
 | `black`        | `BLACK_EXTRA`/`ARGS`        | none                                | [`pyproject.toml`](https://github.com/psf/black#configuration-format)|
 | `hadolint`     | `HADOLINT_EXTRA`/`ARGS`     | `--ignore DL3005 --ignore DL3059`   | [`.hadolint.yaml`](https://github.com/hadolint/hadolint#configure)|
 | `jsonlint`     | `JSONLINT_EXTRA`/`ARGS`     | `--in-place --insert-final-newline` | none |
+| `linkcheck`    | `LINKCHECK_EXTRA`/`ARGS`    | `--ignore (local|site).flywheel.io` | [`.linkcheck.json`](https://github.com/tcort/markdown-link-check#config-file-format)|
 | `markdownlint` | `MARKDOWNLINT_EXTRA`/`ARGS` | `--fix`                             | [`.markdownlint.json`](https://github.com/DavidAnson/markdownlint#optionsconfig)|
 | `pydocstyle`   | `PYDOCSTYLE_EXTRA`/`ARGS`   | `--convention=google`               | [`.pydocstyle.ini`](http://www.pydocstyle.org/en/stable/snippets/config.html)|
 | `shellcheck`   | `SHELLCHECK_EXTRA`/`ARGS`   | `--external-sources --color=always` | [`.shellcheckrc`](https://github.com/koalaman/shellcheck/blob/master/shellcheck.1.md#rc-files)|
@@ -63,8 +65,9 @@ default config location if it exists at the project root:
 
 If not present, the following config files are auto-injected:
 
-- [`.markdownlint.json`](lint/.markdownlint.json)
-- [`.yamllint.yml`](lint/.yamllint.yml)
+- [`.linkcheck.json`](qa_ci/lint/.linkcheck.json)
+- [`.markdownlint.json`](qa_ci/lint/.markdownlint.json)
+- [`.yamllint.yml`](qa_ci/lint/.yamllint.yml)
 
 ### `test:helm-check`
 

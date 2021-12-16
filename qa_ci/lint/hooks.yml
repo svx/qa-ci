@@ -25,6 +25,14 @@ repos:
           jsonlint $JSONLINT_ARGS ${JSONLINT_EXTRA:-} "$@";
           ' --
         types: [json]
+      - id: linkcheck
+        name: linkcheck
+        language: system
+        entry: bash -euc
+          '
+          LINKCHECK_ARGS=${LINKCHECK_ARGS:---ignore (local|site).flywheel.io};
+          /lint/linkcheck.sh $LINKCHECK_ARGS ${LINKCHECK_EXTRA:-} "$@";
+          ' --
       - id: markdownlint
         name: markdownlint
         language: system

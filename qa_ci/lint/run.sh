@@ -21,6 +21,7 @@ main() {
     cp /lint/hooks.yml "$CONFIG"
 
     # add default linter configs if custom ones aren't present
+    [ -f .linkcheck.yml ] || cp /lint/.linkcheck.json ./
     [ -f .markdownlint.json ] || cp /lint/.markdownlint.json ./
     [ -f .yamllint.yml ] || cp /lint/.yamllint.yml ./
 
@@ -29,6 +30,7 @@ main() {
     pre-commit run --all-files --color always || EXIT_CODE=$?
 
     # reset any injected default linter configs
+    git checkout .linkcheck.json 2>/dev/null || rm .linkcheck.json
     git checkout .markdownlint.json 2>/dev/null || rm .markdownlint.json
     git checkout .yamllint.yml 2>/dev/null || rm .yamllint.yml
 
