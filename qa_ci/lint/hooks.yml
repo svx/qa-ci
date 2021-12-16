@@ -30,7 +30,7 @@ repos:
         language: system
         entry: bash -euc
           '
-          LINKCHECK_ARGS=${LINKCHECK_ARGS:---ignore (local|site).flywheel.io};
+          LINKCHECK_ARGS=${LINKCHECK_ARGS:---ignore (helm.dev|local|site).flywheel.io};
           /lint/linkcheck.sh $LINKCHECK_ARGS ${LINKCHECK_EXTRA:-} "$@";
           ' --
       - id: markdownlint
