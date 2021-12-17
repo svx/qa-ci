@@ -27,8 +27,8 @@ main() {
         -H "Private-Token: $GITLAB_CI_BOT_TOKEN" \
         -H "Content-Type: application/json" \
         -d "$(gjo "$@")" | jq || CURL_STATUS="$?"
-    test "$CURL_STATUS" -ne 409 || { echo "MR already exists"; exit; }
-    test "$CURL_STATUS" -lt 400 || exit 1;
+    test "${CURL_STATUS:=0}" -ne 409 || { echo "MR already exists"; exit; }
+    exit "$CURL_STATUS"
 }
 
 main "$@"
