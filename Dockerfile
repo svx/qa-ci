@@ -57,7 +57,9 @@ RUN curl -fLSs https://download.docker.com/linux/static/stable/x86_64/docker-$DO
 # compose for simple dind intergation environments
 ENV DOCKER_COMPOSE_VERSION=2.2.2
 RUN curl -fLSso docker-compose https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-Linux-x86_64; \
-    chmod +x docker-compose
+    chmod +x docker-compose; \
+    mkdir -p /root/.docker/cli-plugins; \
+    mv docker-compose /root/.docker/cli-plugins;
 
 # docker plugin for updating dockerhub image readmes
 ENV PUSHRM_VERSION=1.8.0
