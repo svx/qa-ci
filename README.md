@@ -51,16 +51,16 @@ Finally, the individual tools may support loading further custom settings from a
 default config location if it exists at the project root:
 
 <!-- markdownlint-disable MD013 -->
-| Tool           | Envvar in `.env`            | Default `ARGS`                      | Config file |
-| :------------- | :-------------------------- | :---------------------------------- | :---------- |
-| `black`        | `BLACK_EXTRA`/`ARGS`        | none                                | [`pyproject.toml`](https://github.com/psf/black#configuration-format)|
-| `hadolint`     | `HADOLINT_EXTRA`/`ARGS`     | `--ignore DL3005 --ignore DL3059`   | [`.hadolint.yaml`](https://github.com/hadolint/hadolint#configure)|
-| `jsonlint`     | `JSONLINT_EXTRA`/`ARGS`     | `--in-place --insert-final-newline` | none |
-| `linkcheck`    | `LINKCHECK_EXTRA`/`ARGS`    | `--ignore (local|site).flywheel.io` | [`.linkcheck.json`](https://github.com/tcort/markdown-link-check#config-file-format)|
-| `markdownlint` | `MARKDOWNLINT_EXTRA`/`ARGS` | `--fix`                             | [`.markdownlint.json`](https://github.com/DavidAnson/markdownlint#optionsconfig)|
-| `pydocstyle`   | `PYDOCSTYLE_EXTRA`/`ARGS`   | `--convention=google`               | [`.pydocstyle.ini`](http://www.pydocstyle.org/en/stable/snippets/config.html)|
-| `shellcheck`   | `SHELLCHECK_EXTRA`/`ARGS`   | `--external-sources --color=always` | [`.shellcheckrc`](https://github.com/koalaman/shellcheck/blob/master/shellcheck.1.md#rc-files)|
-| `yamllint`     | `YAMLLINT_EXTRA`/`ARGS`     | `-f colored`                        | [`.yamllint.yml`](https://yamllint.readthedocs.io/en/stable/configuration.html#extending-the-default-configuration)|
+| Tool           | Envvar in `.env`            | Default `ARGS`                                            | Config file |
+| :------------- | :-------------------------- | :-------------------------------------------------------- | :---------- |
+| `black`        | `BLACK_EXTRA`/`ARGS`        | none                                                      | [`pyproject.toml`](https://github.com/psf/black#configuration-format)|
+| `hadolint`     | `HADOLINT_EXTRA`/`ARGS`     | `--ignore DL3005 --ignore DL3059`                         | [`.hadolint.yaml`](https://github.com/hadolint/hadolint#configure)|
+| `jsonlint`     | `JSONLINT_EXTRA`/`ARGS`     | `--in-place --insert-final-newline`                       | none |
+| `linkcheck`    | `LINKCHECK_EXTRA`/`ARGS`    | `--ignore localhost\|(helm.dev\|local\|site).flywheel.io` | [`.linkcheck.json`](https://github.com/tcort/markdown-link-check#config-file-format)|
+| `markdownlint` | `MARKDOWNLINT_EXTRA`/`ARGS` | `--fix`                                                   | [`.markdownlint.json`](https://github.com/DavidAnson/markdownlint#optionsconfig)|
+| `pydocstyle`   | `PYDOCSTYLE_EXTRA`/`ARGS`   | `--convention=google`                                     | [`.pydocstyle.ini`](http://www.pydocstyle.org/en/stable/snippets/config.html)|
+| `shellcheck`   | `SHELLCHECK_EXTRA`/`ARGS`   | `--external-sources --color=always`                       | [`.shellcheckrc`](https://github.com/koalaman/shellcheck/blob/master/shellcheck.1.md#rc-files)|
+| `yamllint`     | `YAMLLINT_EXTRA`/`ARGS`     | `-f colored`                                              | [`.yamllint.yml`](https://yamllint.readthedocs.io/en/stable/configuration.html#extending-the-default-configuration)|
 <!-- markdownlint-enable -->
 
 If not present, the following config files are auto-injected:
