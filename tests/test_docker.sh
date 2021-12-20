@@ -37,6 +37,7 @@ run_tests() {
     EXPECTED_BIN=(
         black
         docker
+        docker-compose
         hadolint
         helm
         helm-docs

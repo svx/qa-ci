@@ -8,7 +8,7 @@
 
 replace ZSTD_VERSION=.* ZSTD_VERSION="$(latest_version git facebook/zstd '^v')"
 replace DOCKER_VERSION=.* DOCKER_VERSION="$(latest_version git docker/engine '^v')"
-replace DOCKER_COMPOSE_VERSION=.* DOCKER_COMPOSE_VERSION="$(latest_version git docker/compose '^v')"
+replace DOCKER_COMPOSE_VERSION=.* DOCKER_COMPOSE_VERSION="$(latest_version git docker/compose '^[0-9]')"
 replace PUSHRM_VERSION=.* PUSHRM_VERSION="$(latest_version git christian-korneck/docker-pushrm)"
 replace HELM_VERSION=.* HELM_VERSION="$(latest_version git helm/helm v3.3)"
 replace HELM_DOCS_VERSION=.* HELM_DOCS_VERSION="$(latest_version git norwoodj/helm-docs v1.5)"
