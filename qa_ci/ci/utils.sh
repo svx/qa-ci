@@ -21,11 +21,15 @@ strip() { sed -E 's/^([[:space:]]*)//;s/([[:space:]]*)$//'; }
 # gitlab repo cloning helper
 git_clone() {
     test -z "${CI_JOB_ID:-}" || export GIT_TERMINAL_PROMPT=0
-    test -n "${GITLAB_CI_BOT_READ_TOKEN:-}" \
-        && URL="https://oauth2:$GITLAB_CI_BOT_READ_TOKEN@gitlab.com/$1" \
+    test -n "${CI_PUSH_TOKEN:-}" \
+        && URL="https://$CI_PUSH_USER_NAME:$CI_PUSH_TOKEN@gitlab.com/$1" \
         || URL="https://gitlab.com/$1"
-    CLONE="/tmp/$1"
-    test -d "$CLONE" || git clone -q --depth 1 "$URL" "$CLONE"
+    CLONE="/tmp/$1" && shift
+    set -- "$@" -q --depth 1 "$URL" "$CLONE"
+    test -z "${CI_PUSH_TOKEN:-}" || set -- "$@" \
+        -c user.email="$CI_PUSH_USER_EMAIL" \
+        -c user.name="$CI_PUSH_USER_NAME"
+    test -d "$CLONE" || git clone "$@"
     echo "$CLONE"
 }
 

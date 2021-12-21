@@ -25,7 +25,7 @@ main() {
     done
     TICKETS="$(echo "${TICKETS:-}" | grep -Ev 'FLYW-0+|^$' | sort -u | sort -nr || true)"
     if test -n "${TICKETS:-}"; then
-        TICKETS=$(echo "$TICKETS" | awk '{print "- [ ] " $0}')
+        TICKETS=$(echo "$TICKETS" | awk '{print "- " $0}')
         echo -e "\n\n#### JIRA tickets\n\n$TICKETS"
     fi
     echo -e "\n[//]: # (CHANGELOG END)\n"
