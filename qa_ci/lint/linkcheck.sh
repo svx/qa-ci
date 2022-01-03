@@ -44,6 +44,7 @@ main() {
 
 check_links() {
     log "FILE: $1"
+    local ERRORS
     while read -r URL; do
         if test -n "$2"; then
             # ignore url if one of the ignore pattern matches
