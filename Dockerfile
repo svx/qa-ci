@@ -1,4 +1,4 @@
-FROM flywheel/python:main.3270f86a
+FROM flywheel/python:main.19d34954
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
 
@@ -8,7 +8,7 @@ RUN apt-get update; \
     rm -rf /var/lib/apt/lists/*
 
 # add zstandard compression alg
-ENV ZSTD_VERSION=1.5.0
+ENV ZSTD_VERSION=1.5.1
 RUN curl -fLSs https://github.com/facebook/zstd/releases/download/v$ZSTD_VERSION/zstd-$ZSTD_VERSION.tar.gz \
         | tar xz; \
     make -C zstd-$ZSTD_VERSION -j"$(nproc)"; \
