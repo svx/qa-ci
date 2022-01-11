@@ -27,7 +27,7 @@ main() {
 
 
 get_helm_hash() {
-    find "$1" -type f -not -path "$1/render/*" -exec md5sum {} \; \
+    find "$1" -type f -not -path "$1/render/*" -not -path "$1/*/charts/*" -exec md5sum {} \; \
         | sort -k2 | md5sum
 }
 
@@ -45,12 +45,13 @@ check_chart() {
     sed -Ei "s/version:.*/version: '$VERSION'/" Chart.yaml
     sed -Ei "s/tag:.*/tag: '$VERSION'/" values.yaml
     log "Running helm dependency update"
-    helm dependency list | grep -iqv missing || helm dependency update .
+    helm dependency list | (! grep -iq missing) || helm dependency update .
     log "Running helm-docs"
     helm-docs --sort-values-order file
     TEST_VALUES=$(find . -name '*.yaml' | sed -E "s|^\./||" | grep -E "^test" || true)
     test -n "$TEST_VALUES" || echo "{}" >"${TEST_VALUES:=/tmp/empty.yaml}"
     mkdir -p "$REPO/helm/render"
+    test -f .yamllint.yml && YAMLLINT_CFG=.yamllint.yml || YAMLLINT_CFG=/helm/.yamllint.yml
     for VALUES in $TEST_VALUES; do
         log "Using --values $VALUES"
         log "Running helm lint"
@@ -60,7 +61,7 @@ check_chart() {
         helm template flywheel . --values "$VALUES" >"$RENDERED_FILE"
         log "Running kubeval"
         kubeval -v "$KUBERNETES" --strict --force-color "$RENDERED_FILE"
-        yamllint -c /helm/.yamllint.yml -f colored "$RENDERED_FILE"
+        yamllint -c "$YAMLLINT_CFG" -f colored "$RENDERED_FILE"
     done
 }
 
