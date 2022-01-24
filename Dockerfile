@@ -1,14 +1,14 @@
-FROM flywheel/python:main.d1938064
+FROM flywheel/python:main.5999d13c
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
 
 # add build-essential (make, gcc, etc.)
 RUN apt-get update; \
-    apt-get install -y --no-install-recommends build-essential=12.6; \
+    apt-get install -y --no-install-recommends build-essential=12.9; \
     rm -rf /var/lib/apt/lists/*
 
 # add zstandard compression alg
-ENV ZSTD_VERSION=1.5.1
+ENV ZSTD_VERSION=1.5.2
 RUN curl -fLSs https://github.com/facebook/zstd/releases/download/v$ZSTD_VERSION/zstd-$ZSTD_VERSION.tar.gz \
         | tar xz; \
     make -C zstd-$ZSTD_VERSION -j"$(nproc)"; \
@@ -35,7 +35,7 @@ RUN curl -fLSs https://nodejs.org/dist/v$NODEJS_VERSION/node-v$NODEJS_VERSION-li
 RUN npm install --global \
         jsonlint-newline-fork@1.6.8 \
         markdownlint-cli@0.30.0 \
-        markdown-link-check@3.9.0 \
+        markdown-link-check@3.9.2 \
     ; \
     rm -rf ~/.config ~/.npm
 
@@ -43,7 +43,7 @@ RUN npm install --global \
 RUN pip install --no-cache-dir \
     black==21.12b0 \
     hadolintw==1.2.1 \
-    pre-commit==2.16.0 \
+    pre-commit==2.17.0 \
     pydocstyle==6.1.1 \
     pyyaml==6.0 \
     safety==1.10.3 \
