@@ -35,13 +35,13 @@ RUN curl -fLSs https://nodejs.org/dist/v$NODEJS_VERSION/node-v$NODEJS_VERSION-li
 RUN npm install --global \
         jsonlint-newline-fork@1.6.8 \
         markdownlint-cli@0.30.0 \
-        markdown-link-check@3.9.2 \
+        markdown-link-check@3.9.3 \
     ; \
     rm -rf ~/.config ~/.npm
 
 # install npm packages (linters for test:flywheel-lint)
 RUN pip install --no-cache-dir \
-    black==21.12b0 \
+    black==22.1.0 \
     hadolintw==1.2.1 \
     pre-commit==2.17.0 \
     pydocstyle==6.1.1 \
