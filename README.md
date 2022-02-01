@@ -89,7 +89,8 @@ docker run --rm -itv $(pwd):/src -w /src -e TRACE=1 flywheel/qa-ci /helm/run.sh
 chart docs in `helm/<project>/README.md`
 - Run [`helm lint`](https://helm.sh/docs/helm/helm_lint/)
 - Run [`kubeval`](https://www.kubeval.com/)
-- Run [`yamllint`](https://www.kubeval.com/) on the rendered tests
+- Run [`yamllint`](https://yamllint.readthedocs.io/en/stable/) on the rendered
+tests
 
 ### `update:repo`
 
