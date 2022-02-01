@@ -39,7 +39,10 @@ RUN npm install --global \
     ; \
     rm -rf ~/.config ~/.npm
 
-# install npm packages (linters for test:flywheel-lint)
+# install pip packages (linters for test:flywheel-lint)
+# NOTE click dependency workaround (openapi2jsonschema[<8] vs black[>=8])
+RUN pip install --no-cache-dir \
+    openapi2jsonschema==0.9.1
 RUN pip install --no-cache-dir \
     black==22.1.0 \
     hadolintw==1.2.1 \
@@ -85,8 +88,7 @@ RUN curl -fLSs https://github.com/instrumenta/kubeval/releases/download/v$KUBEVA
 ENV KUBEVAL_SCHEMA_DIR=/etc/kubeval
 ENV KUBEVAL_SCHEMA_LOCATION=file://$KUBEVAL_SCHEMA_DIR
 WORKDIR $KUBEVAL_SCHEMA_DIR
-RUN pip install --no-cache-dir openapi2jsonschema==0.9.1; \
-    openapi2jsonschema --expanded --kubernetes --stand-alone --strict \
+RUN openapi2jsonschema --expanded --kubernetes --stand-alone --strict \
         --output v$KUBERNETES-standalone-strict \
         https://github.com/kubernetes/kubernetes/raw/v$KUBERNETES/api/openapi-spec/swagger.json
 
