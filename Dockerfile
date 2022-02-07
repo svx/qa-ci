@@ -1,4 +1,4 @@
-FROM flywheel/python:main.5999d13c
+FROM flywheel/python:main.4c38e818
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 WORKDIR /usr/local/bin
 
@@ -34,7 +34,7 @@ RUN curl -fLSs https://nodejs.org/dist/v$NODEJS_VERSION/node-v$NODEJS_VERSION-li
 # install npm packages (linters for test:flywheel-lint)
 RUN npm install --global \
         jsonlint-newline-fork@1.6.8 \
-        markdownlint-cli@0.30.0 \
+        markdownlint-cli@0.31.0 \
         markdown-link-check@3.9.3 \
     ; \
     rm -rf ~/.config ~/.npm
