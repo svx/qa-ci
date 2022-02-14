@@ -57,7 +57,10 @@ repos:
       - id: safety
         name: safety
         language: system
-        entry: bash -euc 'poetry export | safety check --stdin'
+        entry: bash -euc
+          '
+          poetry export | safety check ${SAFETY_ARGS:-} ${SAFETY_EXTRA:-} --stdin
+          ' --
         files: poetry.lock
         pass_filenames: false
       - id: shellcheck

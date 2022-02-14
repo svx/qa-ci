@@ -59,6 +59,7 @@ default config location if it exists at the project root:
 | `linkcheck`    | `LINKCHECK_EXTRA`/`ARGS`    | `--ignore localhost\|(helm.dev\|local\|site).flywheel.io` | [`.linkcheck.json`](https://github.com/tcort/markdown-link-check#config-file-format)|
 | `markdownlint` | `MARKDOWNLINT_EXTRA`/`ARGS` | `--fix`                                                   | [`.markdownlint.json`](https://github.com/DavidAnson/markdownlint#optionsconfig)|
 | `pydocstyle`   | `PYDOCSTYLE_EXTRA`/`ARGS`   | `--convention=google`                                     | [`.pydocstyle.ini`](http://www.pydocstyle.org/en/stable/snippets/config.html)|
+| `safety`       | `SAFETY_EXTRA`/`ARGS`       | none                                                      | none |
 | `shellcheck`   | `SHELLCHECK_EXTRA`/`ARGS`   | `--external-sources --color=always`                       | [`.shellcheckrc`](https://github.com/koalaman/shellcheck/blob/master/shellcheck.1.md#rc-files)|
 | `yamllint`     | `YAMLLINT_EXTRA`/`ARGS`     | `-f colored`                                              | [`.yamllint.yml`](https://yamllint.readthedocs.io/en/stable/configuration.html#extending-the-default-configuration)|
 <!-- markdownlint-enable -->
